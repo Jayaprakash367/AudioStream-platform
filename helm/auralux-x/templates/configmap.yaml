@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: auralux-config
+  namespace: {{ .Values.global.namespace }}
+data:
+  NODE_ENV: {{ .Values.env.NODE_ENV | quote }}
+  LOG_LEVEL: {{ .Values.env.LOG_LEVEL | quote }}
+  REDIS_HOST: {{ .Values.env.REDIS_HOST | quote }}
+  REDIS_PORT: {{ .Values.env.REDIS_PORT | quote }}
+  KAFKA_BROKERS: {{ .Values.env.KAFKA_BROKERS | quote }}
+  CORS_ORIGIN: {{ .Values.env.CORS_ORIGIN | quote }}
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: auralux-secrets
+  namespace: {{ .Values.global.namespace }}
+type: Opaque
+stringData:
+  JWT_SECRET: {{ .Values.secrets.jwtSecret | quote }}
+  JWT_REFRESH_SECRET: {{ .Values.secrets.jwtRefreshSecret | quote }}
+  STREAM_SIGNING_SECRET: {{ .Values.secrets.streamSigningSecret | quote }}
+  SMTP_USER: {{ .Values.secrets.smtpUser | quote }}
+  SMTP_PASS: {{ .Values.secrets.smtpPass | quote }}

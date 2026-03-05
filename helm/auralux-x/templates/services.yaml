@@ -1,0 +1,8 @@
+{{- $ctx := . -}}
+{{- $global := .Values.global -}}
+{{- range $key, $svc := .Values.services }}
+{{- if $svc.enabled }}
+---
+{{ include "auralux.microservice" (dict "svc" $svc "global" $global "ctx" $ctx) }}
+{{- end }}
+{{- end }}

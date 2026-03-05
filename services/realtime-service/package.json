@@ -1,0 +1,30 @@
+{
+  "name": "@auralux/realtime-service",
+  "version": "1.0.0",
+  "description": "Real-time WebSocket service for live song updates and notifications",
+  "main": "dist/server.js",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx watch src/server.ts",
+    "start": "node dist/server.js"
+  },
+  "dependencies": {
+    "@auralux/common": "workspace:*",
+    "@auralux/kafka-client": "workspace:*",
+    "@auralux/logger": "workspace:*",
+    "@auralux/redis-client": "workspace:*",
+    "@auralux/shared-types": "workspace:*",
+    "@fastify/cors": "^9.0.1",
+    "@fastify/helmet": "^11.1.1",
+    "@fastify/websocket": "^10.0.1",
+    "fastify": "^4.28.1",
+    "ws": "^8.18.0",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.10",
+    "@types/ws": "^8.5.10",
+    "tsx": "^4.16.2",
+    "typescript": "^5.5.3"
+  }
+}

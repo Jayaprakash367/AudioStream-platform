@@ -1,0 +1,63 @@
+# ── Stage 1: Builder ─────────────────────────────────────────────────
+FROM node:20-alpine AS builder
+
+WORKDIR /app
+
+# Copy root workspace files
+COPY package.json package-lock.json* tsconfig.base.json ./
+
+# Copy shared packages
+COPY packages/ packages/
+
+# Copy the target service (overridden by build-arg)
+ARG SERVICE_NAME
+COPY services/${SERVICE_NAME}/ services/${SERVICE_NAME}/
+
+# Install all workspace dependencies (production + dev for build)
+RUN npm ci --workspace=packages/* --workspace=services/${SERVICE_NAME} --include-workspace-root
+
+# Build shared packages first, then the service
+RUN npm run build --workspace=packages/shared-types || true && \
+    npm run build --workspace=packages/common || true && \
+    npm run build --workspace=packages/logger || true && \
+    npm run build --workspace=packages/kafka-client || true && \
+    npm run build --workspace=packages/redis-client || true && \
+    npm run build --workspace=services/${SERVICE_NAME}
+
+# ── Stage 2: Production ─────────────────────────────────────────────
+FROM node:20-alpine AS production
+
+RUN apk add --no-cache dumb-init && \
+    addgroup -g 1001 -S nodejs && \
+    adduser -S auralux -u 1001
+
+WORKDIR /app
+
+# Copy package files for production install
+COPY package.json package-lock.json* ./
+COPY packages/ packages/
+
+ARG SERVICE_NAME
+COPY services/${SERVICE_NAME}/package.json services/${SERVICE_NAME}/
+
+# Install production dependencies only
+RUN npm ci --omit=dev --workspace=packages/* --workspace=services/${SERVICE_NAME} --include-workspace-root && \
+    npm cache clean --force
+
+# Copy built artifacts
+COPY --from=builder /app/services/${SERVICE_NAME}/dist services/${SERVICE_NAME}/dist
+COPY --from=builder /app/packages/shared-types/dist packages/shared-types/dist
+COPY --from=builder /app/packages/common/dist packages/common/dist
+COPY --from=builder /app/packages/logger/dist packages/logger/dist
+COPY --from=builder /app/packages/kafka-client/dist packages/kafka-client/dist
+COPY --from=builder /app/packages/redis-client/dist packages/redis-client/dist
+
+# Security: run as non-root
+USER auralux
+
+ENV NODE_ENV=production
+
+EXPOSE 3000
+
+ENTRYPOINT ["dumb-init", "--"]
+CMD ["node", "services/${SERVICE_NAME}/dist/server.js"]

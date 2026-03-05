@@ -1,0 +1,36 @@
+{
+  "name": "auralux-x",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Auralux X — Production-grade distributed music streaming platform",
+  "author": "Auralux Engineering",
+  "license": "PROPRIETARY",
+  "workspaces": [
+    "packages/*",
+    "services/*",
+    "frontend"
+  ],
+  "scripts": {
+    "dev:gateway": "npm run dev --workspace=services/api-gateway",
+    "dev:auth": "npm run dev --workspace=services/auth-service",
+    "dev:user": "npm run dev --workspace=services/user-service",
+    "dev:music": "npm run dev --workspace=services/music-service",
+    "dev:streaming": "npm run dev --workspace=services/streaming-service",
+    "dev:playlist": "npm run dev --workspace=services/playlist-service",
+    "dev:history": "npm run dev --workspace=services/history-service",
+    "dev:recommendation": "npm run dev --workspace=services/recommendation-service",
+    "dev:analytics": "npm run dev --workspace=services/analytics-service",
+    "dev:notification": "npm run dev --workspace=services/notification-service",
+    "dev:frontend": "npm run dev --workspace=frontend",
+    "build:all": "npm run build --workspaces --if-present",
+    "test:all": "npm run test --workspaces --if-present",
+    "lint:all": "npm run lint --workspaces --if-present",
+    "docker:up": "docker-compose -f infrastructure/docker/docker-compose.yml up -d",
+    "docker:down": "docker-compose -f infrastructure/docker/docker-compose.yml down",
+    "docker:logs": "docker-compose -f infrastructure/docker/docker-compose.yml logs -f"
+  },
+  "engines": {
+    "node": ">=20.0.0",
+    "npm": ">=10.0.0"
+  }
+}

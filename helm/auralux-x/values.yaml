@@ -1,0 +1,221 @@
+# ── Global ───────────────────────────────────────────────────────────
+global:
+  namespace: auralux
+  imageRegistry: ""
+  imagePullSecrets: []
+
+# ── Common Environment ───────────────────────────────────────────────
+env:
+  NODE_ENV: production
+  LOG_LEVEL: info
+  REDIS_HOST: redis-master
+  REDIS_PORT: "6379"
+  KAFKA_BROKERS: "kafka-0.kafka-headless:9092"
+  CORS_ORIGIN: "https://auralux.io"
+
+secrets:
+  jwtSecret: "CHANGE_ME"
+  jwtRefreshSecret: "CHANGE_ME_REFRESH"
+  streamSigningSecret: "CHANGE_ME_STREAM"
+  smtpUser: ""
+  smtpPass: ""
+
+# ── Services ─────────────────────────────────────────────────────────
+services:
+  apiGateway:
+    enabled: true
+    name: api-gateway
+    port: 3000
+    replicas: 3
+    image:
+      repository: auralux/api-gateway
+      tag: latest
+    resources:
+      requests: { cpu: 100m, memory: 128Mi }
+      limits: { cpu: 500m, memory: 512Mi }
+    hpa:
+      enabled: true
+      minReplicas: 3
+      maxReplicas: 20
+      targetCPU: 70
+
+  authService:
+    enabled: true
+    name: auth-service
+    port: 3001
+    replicas: 2
+    mongoDatabase: auralux_auth
+    image:
+      repository: auralux/auth-service
+      tag: latest
+    resources:
+      requests: { cpu: 100m, memory: 128Mi }
+      limits: { cpu: 500m, memory: 512Mi }
+    hpa:
+      enabled: true
+      minReplicas: 2
+      maxReplicas: 10
+      targetCPU: 70
+
+  userService:
+    enabled: true
+    name: user-service
+    port: 3002
+    replicas: 2
+    mongoDatabase: auralux_users
+    image:
+      repository: auralux/user-service
+      tag: latest
+    resources:
+      requests: { cpu: 100m, memory: 128Mi }
+      limits: { cpu: 500m, memory: 512Mi }
+    hpa:
+      enabled: true
+      minReplicas: 2
+      maxReplicas: 8
+      targetCPU: 70
+
+  musicService:
+    enabled: true
+    name: music-service
+    port: 3003
+    replicas: 3
+    mongoDatabase: auralux_music
+    image:
+      repository: auralux/music-service
+      tag: latest
+    resources:
+      requests: { cpu: 200m, memory: 256Mi }
+      limits: { cpu: 1000m, memory: 1Gi }
+    hpa:
+      enabled: true
+      minReplicas: 3
+      maxReplicas: 15
+      targetCPU: 65
+
+  streamingService:
+    enabled: true
+    name: streaming-service
+    port: 3004
+    replicas: 4
+    image:
+      repository: auralux/streaming-service
+      tag: latest
+    resources:
+      requests: { cpu: 250m, memory: 256Mi }
+      limits: { cpu: 1000m, memory: 1Gi }
+    hpa:
+      enabled: true
+      minReplicas: 4
+      maxReplicas: 30
+      targetCPU: 60
+
+  playlistService:
+    enabled: true
+    name: playlist-service
+    port: 3005
+    replicas: 2
+    mongoDatabase: auralux_playlists
+    image:
+      repository: auralux/playlist-service
+      tag: latest
+    resources:
+      requests: { cpu: 100m, memory: 128Mi }
+      limits: { cpu: 500m, memory: 512Mi }
+    hpa:
+      enabled: true
+      minReplicas: 2
+      maxReplicas: 8
+      targetCPU: 70
+
+  historyService:
+    enabled: true
+    name: history-service
+    port: 3006
+    replicas: 2
+    mongoDatabase: auralux_history
+    image:
+      repository: auralux/history-service
+      tag: latest
+    resources:
+      requests: { cpu: 100m, memory: 128Mi }
+      limits: { cpu: 500m, memory: 512Mi }
+
+  recommendationService:
+    enabled: true
+    name: recommendation-service
+    port: 3007
+    replicas: 2
+    mongoDatabase: auralux_recommendations
+    image:
+      repository: auralux/recommendation-service
+      tag: latest
+    resources:
+      requests: { cpu: 200m, memory: 256Mi }
+      limits: { cpu: 1000m, memory: 1Gi }
+    hpa:
+      enabled: true
+      minReplicas: 2
+      maxReplicas: 10
+      targetCPU: 65
+
+  analyticsService:
+    enabled: true
+    name: analytics-service
+    port: 3008
+    replicas: 2
+    mongoDatabase: auralux_analytics
+    image:
+      repository: auralux/analytics-service
+      tag: latest
+    resources:
+      requests: { cpu: 200m, memory: 256Mi }
+      limits: { cpu: 1000m, memory: 1Gi }
+
+  notificationService:
+    enabled: true
+    name: notification-service
+    port: 3009
+    replicas: 2
+    mongoDatabase: auralux_notifications
+    image:
+      repository: auralux/notification-service
+      tag: latest
+    resources:
+      requests: { cpu: 100m, memory: 128Mi }
+      limits: { cpu: 500m, memory: 512Mi }
+
+# ── Ingress ──────────────────────────────────────────────────────────
+ingress:
+  enabled: true
+  className: nginx
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+  hosts:
+    - host: api.auralux.io
+      service: api-gateway
+      port: 3000
+    - host: auralux.io
+      service: frontend
+      port: 3010
+  tls:
+    - secretName: auralux-tls
+      hosts: [api.auralux.io, auralux.io]
+
+# ── Infrastructure Dependencies ──────────────────────────────────────
+mongodb:
+  enabled: true
+  architecture: replicaset
+  replicaCount: 3
+
+redis:
+  enabled: true
+  architecture: replication
+  replica:
+    replicaCount: 2
+
+kafka:
+  enabled: true
+  replicaCount: 3
+  zookeeper:
+    replicaCount: 3

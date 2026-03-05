@@ -1,0 +1,29 @@
+{
+  "name": "auralux-x",
+  "version": "2.0.0",
+  "private": true,
+  "workspaces": [
+    "packages/*",
+    "services/*",
+    "frontend"
+  ],
+  "scripts": {
+    "dev": "npm run dev:services & npm run dev:frontend",
+    "dev:auth": "cd services/auth && npm run dev",
+    "dev:frontend": "cd frontend && npm run dev",
+    "dev:services": "npm run dev:auth",
+    "build": "npm run build:shared && npm run build:services && npm run build:frontend",
+    "build:shared": "cd packages/shared && npm run build",
+    "build:services": "cd services/auth && npm run build",
+    "build:frontend": "cd frontend && npm run build",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    "docker:logs": "docker-compose logs -f",
+    "setup": "npm install && npm run build:shared",
+    "clean": "rimraf node_modules packages/*/dist services/*/dist frontend/.next"
+  },
+  "devDependencies": {
+    "rimraf": "^5.0.5",
+    "typescript": "^5.3.3"
+  }
+}

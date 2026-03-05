@@ -1,0 +1,13 @@
+apiVersion: v2
+name: auralux-x
+description: Auralux X – Distributed Music Streaming Platform
+type: application
+version: 0.1.0
+appVersion: "1.0.0"
+keywords:
+  - music
+  - streaming
+  - microservices
+maintainers:
+  - name: Auralux Team
+    email: devops@auralux.io

@@ -1,0 +1,161 @@
+
+> @auralux/common@1.0.0 build
+> tsc -b
+
+
+> @auralux/kafka-client@1.0.0 build
+> tsc -b
+
+
+> @auralux/logger@1.0.0 build
+> tsc -b
+
+
+> @auralux/redis-client@1.0.0 build
+> tsc -b
+
+
+> @auralux/shared-types@1.0.0 build
+> tsc -b
+
+
+> @auralux/analytics-service@1.0.0 build
+> tsc -b
+
+
+> @auralux/api-gateway@1.0.0 build
+> tsc -b
+
+
+> @auralux/auth-service@1.0.0 build
+> tsc -b
+
+src/routes/auth.routes.ts(23,47): error TS2345: Argument of type '{ email?: string; username?: string; password?: string; displayName?: string; }' is not assignable to parameter of type '{ email: string; username: string; password: string; displayName: string; }'.
+  Property 'email' is optional in type '{ email?: string; username?: string; password?: string; displayName?: string; }' but required in type '{ email: string; username: string; password: string; displayName: string; }'.
+src/routes/auth.routes.ts(40,44): error TS2345: Argument of type '{ ipAddress: string; userAgent: string; email?: string; password?: string; }' is not assignable to parameter of type '{ email: string; password: string; ipAddress: string; userAgent: string; }'.
+  Property 'email' is optional in type '{ ipAddress: string; userAgent: string; email?: string; password?: string; }' but required in type '{ email: string; password: string; ipAddress: string; userAgent: string; }'.
+src/services/auth.service.ts(300,29): error TS2769: No overload matches this call.
+  Overload 1 of 5, '(payload: string | object | Buffer<ArrayBufferLike>, secretOrPrivateKey: null, options?: SignOptions & { algorithm: "none"; }): string', gave the following error.
+    Argument of type 'string' is not assignable to parameter of type 'null'.
+  Overload 2 of 5, '(payload: string | object | Buffer<ArrayBufferLike>, secretOrPrivateKey: Buffer<ArrayBufferLike> | Secret | PrivateKeyInput | JsonWebKeyInput, options?: SignOptions): string', gave the following error.
+    Type 'string' is not assignable to type 'number | StringValue'.
+  Overload 3 of 5, '(payload: string | object | Buffer<ArrayBufferLike>, secretOrPrivateKey: Buffer<ArrayBufferLike> | Secret | PrivateKeyInput | JsonWebKeyInput, callback: SignCallback): void', gave the following error.
+    Object literal may only specify known properties, and 'expiresIn' does not exist in type 'SignCallback'.
+npm error Lifecycle script `build` failed with error:
+npm error code 1
+npm error path C:\Users\jayaprakash.k\OneDrive\Documents\spotify\services\auth-service
+npm error workspace @auralux/auth-service@1.0.0
+npm error location C:\Users\jayaprakash.k\OneDrive\Documents\spotify\services\auth-service
+npm error command failed
+npm error command C:\WINDOWS\system32\cmd.exe /d /s /c tsc -b
+
+
+> @auralux/history-service@1.0.0 build
+> tsc -b
+
+
+> @auralux/music-service@1.0.0 build
+> tsc -b
+
+src/routes/music.routes.ts(13,51): error TS2345: Argument of type '{ page?: number; limit?: number; sortBy?: string; sortOrder?: "asc" | "desc"; q?: string; genre?: string; artistId?: string; albumId?: string; isExplicit?: boolean; }' is not assignable to parameter of type 'SearchParams'.
+  Property 'page' is optional in type '{ page?: number; limit?: number; sortBy?: string; sortOrder?: "asc" | "desc"; q?: string; genre?: string; artistId?: string; albumId?: string; isExplicit?: boolean; }' but required in type 'SearchParams'.
+src/services/music.service.ts(74,12): error TS2352: Conversion of type 'FlattenMaps<ISongDoc> & Required<{ _id: ObjectId; }> & { __v: number; }' to type 'ISongDoc' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
+  The types of 'collection.conn.db.client' are incompatible between these types.
+    Type 'FlattenMaps<MongoClient>' is missing the following properties from type 'MongoClient': driverInfoList, _close
+npm error Lifecycle script `build` failed with error:
+npm error code 1
+npm error path C:\Users\jayaprakash.k\OneDrive\Documents\spotify\services\music-service
+npm error workspace @auralux/music-service@1.0.0
+npm error location C:\Users\jayaprakash.k\OneDrive\Documents\spotify\services\music-service
+npm error command failed
+npm error command C:\WINDOWS\system32\cmd.exe /d /s /c tsc -b
+
+
+> @auralux/notification-service@1.0.0 build
+> tsc -b
+
+src/app.ts(25,45): error TS2551: Property 'corsOrigin' does not exist on type 'NotificationServiceConfig'. Did you mean 'corsOrigins'?
+src/app.ts(45,15): error TS2339: Property 'connect' does not exist on type 'KafkaEventBus'.
+src/app.ts(54,5): error TS2345: Argument of type 'string' is not assignable to parameter of type 'MessageHandler<unknown>'.
+src/services/notification.service.ts(124,9): error TS2554: Expected 1-2 arguments, but got 3.
+npm error Lifecycle script `build` failed with error:
+npm error code 1
+npm error path C:\Users\jayaprakash.k\OneDrive\Documents\spotify\services\notification-service
+npm error workspace @auralux/notification-service@1.0.0
+npm error location C:\Users\jayaprakash.k\OneDrive\Documents\spotify\services\notification-service
+npm error command failed
+npm error command C:\WINDOWS\system32\cmd.exe /d /s /c tsc -b
+
+
+> @auralux/playlist-service@1.0.0 build
+> tsc -b
+
+src/routes/playlist.routes.ts(9,51): error TS2345: Argument of type '{ ownerId: string; ownerName: string; name?: string; description?: string; visibility?: "PRIVATE" | "PUBLIC" | "SHARED"; songIds?: string[]; }' is not assignable to parameter of type '{ name: string; description?: string; visibility: string; songIds?: string[]; ownerId: string; ownerName: string; }'.
+  Property 'name' is optional in type '{ ownerId: string; ownerName: string; name?: string; description?: string; visibility?: "PRIVATE" | "PUBLIC" | "SHARED"; songIds?: string[]; }' but required in type '{ name: string; description?: string; visibility: string; songIds?: string[]; ownerId: string; ownerName: string; }'.
+npm error Lifecycle script `build` failed with error:
+npm error code 1
+npm error path C:\Users\jayaprakash.k\OneDrive\Documents\spotify\services\playlist-service
+npm error workspace @auralux/playlist-service@1.0.0
+npm error location C:\Users\jayaprakash.k\OneDrive\Documents\spotify\services\playlist-service
+npm error command failed
+npm error command C:\WINDOWS\system32\cmd.exe /d /s /c tsc -b
+
+
+> @auralux/recommendation-service@1.0.0 build
+> tsc -b
+
+src/app.ts(9,22): error TS2724: '"@auralux/shared-types"' has no exported member named 'IListeningHistoryEvent'. Did you mean 'IListeningHistory'?
+src/app.ts(25,45): error TS2551: Property 'corsOrigin' does not exist on type 'RecommendationServiceConfig'. Did you mean 'corsOrigins'?
+src/app.ts(45,15): error TS2339: Property 'connect' does not exist on type 'KafkaEventBus'.
+src/app.ts(54,5): error TS2345: Argument of type 'string' is not assignable to parameter of type 'MessageHandler<IListeningHistoryEvent>'.
+src/services/recommendation.service.ts(3,29): error TS2724: '"@auralux/shared-types"' has no exported member named 'IListeningHistoryEvent'. Did you mean 'IListeningHistory'?
+src/services/recommendation.service.ts(357,5): error TS2322: Type 'FlattenMaps<IUserTasteProfile> & Required<{ _id: ObjectId; }> & { __v: number; }' is not assignable to type 'IUserTasteProfile'.
+  The types of 'collection.conn.db.client' are incompatible between these types.
+    Type 'FlattenMaps<MongoClient>' is missing the following properties from type 'MongoClient': driverInfoList, _close
+npm error Lifecycle script `build` failed with error:
+npm error code 1
+npm error path C:\Users\jayaprakash.k\OneDrive\Documents\spotify\services\recommendation-service
+npm error workspace @auralux/recommendation-service@1.0.0
+npm error location C:\Users\jayaprakash.k\OneDrive\Documents\spotify\services\recommendation-service
+npm error command failed
+npm error command C:\WINDOWS\system32\cmd.exe /d /s /c tsc -b
+
+
+> @auralux/streaming-service@1.0.0 build
+> tsc -b
+
+
+> @auralux/user-service@1.0.0 build
+> tsc -b
+
+
+> @auralux/frontend@1.0.0 build
+> next build
+
+  ▲ Next.js 14.2.35
+
+
+> Build error occurred
+Error: EINVAL: invalid argument, readlink 'C:\Users\jayaprakash.k\OneDrive\Documents\spotify\frontend\.next\standalone\node_modules\node-releases'
+    at async Object.readlink (node:internal/fs/promises:971:10)
+    at async C:\Users\jayaprakash.k\OneDrive\Documents\spotify\node_modules\next\dist\lib\recursive-delete.js:58:30
+    at async Promise.all (index 11)
+    at async recursiveDelete (C:\Users\jayaprakash.k\OneDrive\Documents\spotify\node_modules\next\dist\lib\recursive-delete.js:51:5)
+    at async C:\Users\jayaprakash.k\OneDrive\Documents\spotify\node_modules\next\dist\lib\recursive-delete.js:68:17
+    at async Promise.all (index 1)
+    at async recursiveDelete (C:\Users\jayaprakash.k\OneDrive\Documents\spotify\node_modules\next\dist\lib\recursive-delete.js:51:5)
+    at async C:\Users\jayaprakash.k\OneDrive\Documents\spotify\node_modules\next\dist\lib\recursive-delete.js:68:17
+    at async Promise.all (index 2)
+    at async recursiveDelete (C:\Users\jayaprakash.k\OneDrive\Documents\spotify\node_modules\next\dist\lib\recursive-delete.js:51:5) {
+  errno: -4071,
+  code: 'EINVAL',
+  syscall: 'readlink',
+  path: 'C:\\Users\\jayaprakash.k\\OneDrive\\Documents\\spotify\\frontend\\.next\\standalone\\node_modules\\node-releases'
+}
+npm error Lifecycle script `build` failed with error:
+npm error code 1
+npm error path C:\Users\jayaprakash.k\OneDrive\Documents\spotify\frontend
+npm error workspace @auralux/frontend@1.0.0
+npm error location C:\Users\jayaprakash.k\OneDrive\Documents\spotify\frontend
+npm error command failed
+npm error command C:\WINDOWS\system32\cmd.exe /d /s /c next build

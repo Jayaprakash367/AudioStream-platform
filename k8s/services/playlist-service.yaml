@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: playlist-service
+  namespace: auralux
+  labels: { app: playlist-service, tier: backend }
+spec:
+  replicas: 2
+  selector:
+    matchLabels: { app: playlist-service }
+  template:
+    metadata:
+      labels: { app: playlist-service, tier: backend }
+    spec:
+      containers:
+        - name: playlist-service
+          image: auralux/playlist-service:latest
+          ports: [{ containerPort: 3005, name: http }]
+          envFrom:
+            - configMapRef: { name: auralux-config }
+            - secretRef: { name: auralux-secrets }
+          env:
+            - { name: PORT, value: "3005" }
+            - { name: MONGO_URI, value: "mongodb://mongodb-0.mongodb-headless.auralux.svc.cluster.local:27017/auralux_playlists" }
+          resources:
+            requests: { cpu: 100m, memory: 128Mi }
+            limits: { cpu: 500m, memory: 512Mi }
+          livenessProbe:
+            httpGet: { path: /health/live, port: http }
+            initialDelaySeconds: 10
+            periodSeconds: 15
+          readinessProbe:
+            httpGet: { path: /health/ready, port: http }
+            initialDelaySeconds: 5
+            periodSeconds: 10
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: playlist-service
+  namespace: auralux
+spec:
+  type: ClusterIP
+  selector: { app: playlist-service }
+  ports: [{ port: 3005, targetPort: http, name: http }]
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: playlist-service-hpa
+  namespace: auralux
+spec:
+  scaleTargetRef: { apiVersion: apps/v1, kind: Deployment, name: playlist-service }
+  minReplicas: 2
+  maxReplicas: 8
+  metrics:
+    - type: Resource
+      resource: { name: cpu, target: { type: Utilization, averageUtilization: 70 } }

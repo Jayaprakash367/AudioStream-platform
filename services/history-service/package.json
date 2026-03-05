@@ -1,0 +1,11 @@
+{
+  "name": "@auralux/history-service",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": { "dev": "tsx watch src/server.ts", "build": "tsc -b", "start": "node dist/server.js", "clean": "rimraf dist" },
+  "dependencies": {
+    "fastify": "^4.26.0", "@fastify/cors": "^9.0.0", "@fastify/helmet": "^11.1.0", "mongoose": "^8.1.0",
+    "@auralux/common": "*", "@auralux/shared-types": "*", "@auralux/logger": "*", "@auralux/kafka-client": "*", "@auralux/redis-client": "*"
+  },
+  "devDependencies": { "typescript": "^5.4.0", "tsx": "^4.7.0", "rimraf": "^5.0.0" }
+}
