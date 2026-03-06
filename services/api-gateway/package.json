@@ -19,10 +19,10 @@
     "@fastify/swagger-ui": "^3.0.0",
     "jsonwebtoken": "^9.0.0",
     "prom-client": "^15.1.0",
-    "@auralux/common": "*",
-    "@auralux/shared-types": "*",
-    "@auralux/logger": "*",
-    "@auralux/redis-client": "*"
+    "@auralux/common": "workspace:*",
+    "@auralux/shared-types": "workspace:*",
+    "@auralux/logger": "workspace:*",
+    "@auralux/redis-client": "workspace:*"
   },
   "devDependencies": {
     "@types/jsonwebtoken": "^9.0.0",

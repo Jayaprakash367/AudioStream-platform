@@ -189,7 +189,7 @@ export default function HomePage() {
 
       {/* ── Music by Language ── */}
       <section>
-        <SectionHeader title="Music by Language" subtitle="Songs in every language — powered by Apple Music" />
+        <SectionHeader title="Music by Language" subtitle="Songs in every language — on Auralux X" />
         <div className="flex gap-2 overflow-x-auto pb-2 mb-5 scrollbar-none">
           {LANGUAGE_LIST.map((lang) => (
             <LanguagePill key={lang} language={lang} active={activeLang === lang} onClick={() => setActiveLang(lang)} />
@@ -218,7 +218,7 @@ export default function HomePage() {
 
       {/* ── Trending now ── */}
       <section>
-        <SectionHeader title="🔥 Trending Now" subtitle="Live trending from Apple Music" action="See all" />
+        <SectionHeader title="🔥 Trending Now" subtitle="Live trending on Auralux X" action="See all" />
         {loadingTrending ? (
           <div className="space-y-1">
             {Array.from({ length: 8 }).map((_, i) => <TrackSkeleton key={i} />)}
@@ -241,7 +241,7 @@ export default function HomePage() {
 
       {/* ── New Releases ── */}
       <section>
-        <SectionHeader title="✨ New Releases" subtitle="Fresh from Apple Music" action="See all" />
+        <SectionHeader title="✨ New Releases" subtitle="Fresh on Auralux X" action="See all" />
         {loadingFeatured ? (
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
             {Array.from({ length: 6 }).map((_, i) => <CardSkeleton key={i} />)}
@@ -312,7 +312,7 @@ export default function HomePage() {
           <Zap size={18} className="text-neon-yellow" />
           <span className="font-bold font-display text-gradient-pink">Auralux X — Music Streaming</span>
         </div>
-        <p className="text-sm text-surface-400">Streaming from Apple Music · JioSaavn</p>
+        <p className="text-sm text-surface-400">Powered by Auralux X</p>
         <div className="flex items-center justify-center gap-6 mt-4 text-xs text-surface-500">
           <span>🎵 100M+ songs</span>
           <span>🌍 17+ languages</span>

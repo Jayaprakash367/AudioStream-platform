@@ -35,7 +35,7 @@ export default function TrendingPage() {
         </div>
         <div>
           <h1 className="text-2xl font-bold font-display">Trending Charts</h1>
-          <p className="text-sm text-surface-400">Live trending from JioSaavn & Apple Music</p>
+          <p className="text-sm text-surface-400">Live trending on Auralux X</p>
         </div>
       </div>
 

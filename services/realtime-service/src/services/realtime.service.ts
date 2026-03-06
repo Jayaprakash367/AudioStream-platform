@@ -249,7 +249,7 @@ export class RealtimeService {
   async publishNewSong(song: NewSongPayload): Promise<void> {
     const message: RealtimeMessage = {
       type: 'NEW_SONG',
-      payload: song,
+      payload: song as unknown as Record<string, unknown>,
       timestamp: new Date().toISOString(),
     };
 
@@ -271,7 +271,7 @@ export class RealtimeService {
   async publishTrendingUpdate(update: TrendingUpdatePayload): Promise<void> {
     const message: RealtimeMessage = {
       type: 'TRENDING_UPDATE',
-      payload: update,
+      payload: update as unknown as Record<string, unknown>,
       timestamp: new Date().toISOString(),
     };
 

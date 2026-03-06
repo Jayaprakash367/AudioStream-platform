@@ -18,26 +18,29 @@ export async function registerRealtimeRoutes(
     const userId = (request.query as { userId?: string }).userId;
     const language = (request.query as { language?: string }).language || 'all';
 
-    realtimeService.handleConnection(connection.socket, clientId, userId, language);
+    // @fastify/websocket v10: connection IS the WebSocket (no .socket wrapper)
+    const ws = (connection as any).socket ?? connection;
 
-    connection.socket.on('message', (data) => {
+    realtimeService.handleConnection(ws, clientId, userId, language);
+
+    ws.on('message', (data: any) => {
       try {
         const message = JSON.parse(data.toString());
         handleClientMessage(clientId, message, realtimeService);
       } catch {
-        connection.socket.send(JSON.stringify({ error: 'Invalid message format' }));
+        ws.send(JSON.stringify({ error: 'Invalid message format' }));
       }
     });
 
-    connection.socket.on('pong', () => {
+    ws.on('pong', () => {
       // Update last ping time is handled internally
     });
 
-    connection.socket.on('close', () => {
+    ws.on('close', () => {
       realtimeService.handleDisconnect(clientId);
     });
 
-    connection.socket.on('error', () => {
+    ws.on('error', () => {
       realtimeService.handleDisconnect(clientId);
     });
   });

@@ -84,7 +84,7 @@ export default function SearchPage() {
             <Loader2 size={16} className="absolute right-4 top-1/2 -translate-y-1/2 text-neon-pink animate-spin" />
           )}
           {query && !loading && (
-            <button onClick={() => { setQuery(''); setResults(null); }} className="absolute right-4 top-1/2 -translate-y-1/2 text-surface-500 hover:text-white transition-colors">
+            <button onClick={() => { setQuery(''); setResults(null); }} className="absolute right-4 top-1/2 -translate-y-1/2 text-surface-500 hover:text-white transition-colors" aria-label="Clear search">
               <X size={16} />
             </button>
           )}
@@ -104,9 +104,9 @@ export default function SearchPage() {
                 }`}
               >
                 {src === 'all' ? `All (${allTracks.length})` :
-                 src === 'saavn' ? `JioSaavn (${results.saavn.length})` :
-                 src === 'itunes' ? `Apple Music (${results.itunes.length})` :
-                 `Deezer (${results.deezer.length})`}
+                 src === 'saavn' ? `Auralux X (${results.saavn.length})` :
+                 src === 'itunes' ? `Auralux X (${results.itunes.length})` :
+                 `Auralux X (${results.deezer.length})`}
               </button>
             ))}
           </div>

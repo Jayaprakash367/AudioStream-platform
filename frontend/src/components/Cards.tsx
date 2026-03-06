@@ -11,9 +11,8 @@ function fmtTime(s: number) {
 }
 
 function SourceDot({ source }: { source?: string }) {
-  const cols: Record<string, string> = { itunes: 'bg-pink-400', jiosaavn: 'bg-blue-400', deezer: 'bg-cyan-400' };
-  if (!source || !cols[source]) return null;
-  return <span className={`inline-block w-1.5 h-1.5 rounded-full ${cols[source]} opacity-60 flex-shrink-0`} />;
+  if (!source) return null;
+  return <span className="inline-block w-1.5 h-1.5 rounded-full bg-neon-pink opacity-60 flex-shrink-0" />;
 }
 
 /* ─── Track Row (list view) ──────────────────────────────────────────────── */
@@ -98,6 +97,7 @@ export function TrackRow({
         <button
           onClick={(e) => { e.stopPropagation(); toggleLike(track.id); }}
           className={`p-1 rounded-lg transition-all ${isLikedTrack ? 'text-neon-pink opacity-100' : 'text-surface-600 opacity-0 group-hover:opacity-100 hover:text-surface-300'}`}
+          aria-label={isLikedTrack ? 'Remove from favorites' : 'Add to favorites'}
         >
           <Heart size={14} fill={isLikedTrack ? 'currentColor' : 'none'} />
         </button>
@@ -105,7 +105,7 @@ export function TrackRow({
         {track.isFullTrack === false && (
           <span className="text-[9px] text-neon-orange bg-neon-orange/10 px-1 py-0.5 rounded">30s</span>
         )}
-        <button onClick={(e) => e.stopPropagation()} className="text-surface-600 opacity-0 group-hover:opacity-100 hover:text-surface-300 p-1 rounded-lg transition-all">
+        <button onClick={(e) => e.stopPropagation()} className="text-surface-600 opacity-0 group-hover:opacity-100 hover:text-surface-300 p-1 rounded-lg transition-all" aria-label="More options">
           <MoreHorizontal size={14} />
         </button>
       </div>
@@ -137,6 +137,7 @@ export function TrackCard({ track, queue }: { track: Track; queue: Track[] }) {
           <button
             onClick={(e) => { e.stopPropagation(); isCurrent ? togglePlay() : play(track, queue); }}
             className="w-12 h-12 rounded-full bg-neon-pink flex items-center justify-center shadow-xl shadow-neon-pink/30 hover:scale-110 transition-transform translate-y-2 group-hover:translate-y-0"
+            aria-label={isCurrent && isPlaying ? 'Pause' : 'Play'}
           >
             {isCurrent && isLoading ? (
               <Loader2 size={20} className="animate-spin text-white" />
@@ -208,7 +209,7 @@ export function PlaylistCard({ playlist }: { playlist: PlaylistType }) {
         {playlist.cover}
       </div>
       <div className="absolute top-1/2 right-4 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0">
-        <button className="w-11 h-11 rounded-full bg-neon-pink flex items-center justify-center shadow-xl shadow-neon-pink/30 hover:scale-110 transition-transform">
+        <button className="w-11 h-11 rounded-full bg-neon-pink flex items-center justify-center shadow-xl shadow-neon-pink/30 hover:scale-110 transition-transform" aria-label="Play playlist">
           <Play size={18} fill="white" className="text-white ml-0.5" />
         </button>
       </div>
@@ -226,7 +227,7 @@ export function AlbumCard({ album }: { album: AlbumType }) {
         {album.cover}
       </div>
       <div className="absolute top-1/2 right-4 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0">
-        <button className="w-11 h-11 rounded-full bg-neon-pink flex items-center justify-center shadow-xl shadow-neon-pink/30 hover:scale-110 transition-transform">
+        <button className="w-11 h-11 rounded-full bg-neon-pink flex items-center justify-center shadow-xl shadow-neon-pink/30 hover:scale-110 transition-transform" aria-label="Play album">
           <Play size={18} fill="white" className="text-white ml-0.5" />
         </button>
       </div>
@@ -240,7 +241,7 @@ export function AlbumCard({ album }: { album: AlbumType }) {
 export function GenreCard({ genre }: { genre: { id: string; name: string; color: string; icon: string } }) {
   return (
     <div className={`group relative overflow-hidden rounded-xl bg-gradient-to-br ${genre.color} p-5 cursor-pointer transition-all duration-300 hover:scale-[1.02] hover:shadow-xl min-h-[100px]`}>
-      <div className="text-3xl absolute -bottom-1 -right-1 opacity-30 group-hover:opacity-50 transition-opacity text-6xl">{genre.icon}</div>
+      <div className="text-6xl absolute -bottom-1 -right-1 opacity-30 group-hover:opacity-50 transition-opacity">{genre.icon}</div>
       <div className="relative">
         <div className="text-base font-bold">{genre.name}</div>
       </div>

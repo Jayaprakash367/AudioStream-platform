@@ -99,7 +99,7 @@ export default function Sidebar() {
               <span className="text-[10px] font-bold text-surface-500 uppercase tracking-[0.15em]">
                 My Playlists
               </span>
-              <button className="text-surface-600 hover:text-neon-cyan transition-colors p-1 rounded-lg hover:bg-white/5">
+              <button className="text-surface-600 hover:text-neon-cyan transition-colors p-1 rounded-lg hover:bg-white/5" aria-label="Create new playlist">
                 <Plus size={14} />
               </button>
             </div>
@@ -184,10 +184,10 @@ export default function Sidebar() {
           )}
           {sidebarOpen && (
             <div className="flex gap-1 animate-fade-in">
-              <button className="text-surface-600 hover:text-surface-300 p-1.5 rounded-lg hover:bg-white/5 transition-colors">
+              <button className="text-surface-600 hover:text-surface-300 p-1.5 rounded-lg hover:bg-white/5 transition-colors" aria-label="Settings">
                 <Settings size={14} />
               </button>
-              <button className="text-surface-600 hover:text-rose-400 p-1.5 rounded-lg hover:bg-white/5 transition-colors">
+              <button className="text-surface-600 hover:text-rose-400 p-1.5 rounded-lg hover:bg-white/5 transition-colors" aria-label="Log out">
                 <LogOut size={14} />
               </button>
             </div>

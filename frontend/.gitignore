@@ -1,0 +1,17 @@
+# Next.js build output — never commit or sync via OneDrive
+.next/
+out/
+
+# Dependencies
+node_modules/
+
+# Env
+.env*.local
+
+# Debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# TypeScript build info
+*.tsbuildinfo

@@ -1,0 +1,9 @@
+packages:
+  - packages/*
+  - services/*
+  - frontend
+
+onlyBuiltDependencies:
+  - esbuild
+  - mongodb-memory-server
+  - unrs-resolver

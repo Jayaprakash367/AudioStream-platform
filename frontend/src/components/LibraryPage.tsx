@@ -82,10 +82,10 @@ export default function LibraryPage() {
           />
         </div>
         <div className="flex items-center gap-1 bg-surface-900/60 p-1 rounded-xl">
-          <button onClick={() => setViewGrid(true)} className={`p-1.5 rounded-lg transition-all ${viewGrid ? 'bg-white/10 text-white' : 'text-surface-500 hover:text-white'}`}>
+          <button onClick={() => setViewGrid(true)} className={`p-1.5 rounded-lg transition-all ${viewGrid ? 'bg-white/10 text-white' : 'text-surface-500 hover:text-white'}`} aria-label="Grid view">
             <LayoutGrid size={14} />
           </button>
-          <button onClick={() => setViewGrid(false)} className={`p-1.5 rounded-lg transition-all ${!viewGrid ? 'bg-white/10 text-white' : 'text-surface-500 hover:text-white'}`}>
+          <button onClick={() => setViewGrid(false)} className={`p-1.5 rounded-lg transition-all ${!viewGrid ? 'bg-white/10 text-white' : 'text-surface-500 hover:text-white'}`} aria-label="List view">
             <List size={14} />
           </button>
         </div>

@@ -24,19 +24,14 @@ function VolumeIcon({ volume }: { volume: number }) {
 // ─── Source Badge ─────────────────────────────────────────────────────────────
 function SourceBadge({ source, isFullTrack }: { source?: string; isFullTrack?: boolean }) {
   const map: Record<string, { label: string; color: string }> = {
-    itunes: { label: 'Apple Music', color: 'text-pink-400' },
-    jiosaavn: { label: 'JioSaavn', color: 'text-blue-400' },
-    deezer: { label: 'Deezer', color: 'text-neon-cyan' },
+    itunes: { label: 'Auralux X', color: 'text-neon-pink' },
+    jiosaavn: { label: 'Auralux X', color: 'text-neon-pink' },
+    deezer: { label: 'Auralux X', color: 'text-neon-cyan' },
   };
   const b = map[source || ''];
   return (
     <span className="flex items-center gap-1">
       {b && <span className={`text-[10px] font-medium ${b.color} opacity-70`}>{b.label}</span>}
-      {isFullTrack ? (
-        <span className="text-[9px] font-bold text-neon-cyan bg-neon-cyan/10 px-1 py-0.5 rounded">FULL</span>
-      ) : isFullTrack === false ? (
-        <span className="text-[9px] font-bold text-neon-orange bg-neon-orange/10 px-1 py-0.5 rounded">30s</span>
-      ) : null}
     </span>
   );
 }
@@ -87,6 +82,7 @@ export default function Player() {
               <button
                 onClick={() => setExpanded(false)}
                 className="w-9 h-9 rounded-full bg-white/[0.06] hover:bg-white/10 flex items-center justify-center transition-all"
+                aria-label="Collapse player"
               >
                 <ChevronDown size={18} />
               </button>
@@ -97,6 +93,7 @@ export default function Player() {
               <button
                 onClick={() => setShowQueue(!showQueue)}
                 className="w-9 h-9 rounded-full bg-white/[0.06] hover:bg-white/10 flex items-center justify-center transition-all"
+                aria-label={showQueue ? 'Hide queue' : 'Show queue'}
               >
                 <ListMusic size={18} />
               </button>
@@ -164,16 +161,17 @@ export default function Player() {
 
                 {/* Controls */}
                 <div className="flex items-center gap-6 mb-6">
-                  <button onClick={toggleShuffle} className={`transition-all ${shuffle ? 'text-neon-pink' : 'text-surface-500 hover:text-white'}`}>
+                  <button onClick={toggleShuffle} className={`transition-all ${shuffle ? 'text-neon-pink' : 'text-surface-500 hover:text-white'}`} aria-label={shuffle ? 'Disable shuffle' : 'Enable shuffle'}>
                     <Shuffle size={20} />
                   </button>
-                  <button onClick={previous} className="text-surface-300 hover:text-white hover:scale-110 transition-all">
+                  <button onClick={previous} className="text-surface-300 hover:text-white hover:scale-110 transition-all" aria-label="Previous track">
                     <SkipBack size={28} fill="currentColor" />
                   </button>
                   <button
                     onClick={togglePlay}
                     disabled={isLoading}
                     className="w-16 h-16 rounded-full bg-gradient-to-r from-neon-pink to-neon-purple flex items-center justify-center hover:scale-105 transition-all shadow-xl shadow-neon-pink/30 disabled:opacity-70"
+                    aria-label={isPlaying ? 'Pause' : 'Play'}
                   >
                     {isLoading ? (
                       <Loader2 size={28} className="animate-spin text-white" />
@@ -183,10 +181,10 @@ export default function Player() {
                       <Play size={28} fill="white" className="text-white translate-x-0.5" />
                     )}
                   </button>
-                  <button onClick={next} className="text-surface-300 hover:text-white hover:scale-110 transition-all">
+                  <button onClick={next} className="text-surface-300 hover:text-white hover:scale-110 transition-all" aria-label="Next track">
                     <SkipForward size={28} fill="currentColor" />
                   </button>
-                  <button onClick={toggleRepeat} className={`transition-all ${repeat !== 'off' ? 'text-neon-cyan' : 'text-surface-500 hover:text-white'}`}>
+                  <button onClick={toggleRepeat} className={`transition-all ${repeat !== 'off' ? 'text-neon-cyan' : 'text-surface-500 hover:text-white'}`} aria-label={repeat === 'off' ? 'Enable repeat' : repeat === 'one' ? 'Repeat all' : 'Disable repeat'}>
                     {repeat === 'one' ? <Repeat1 size={20} /> : <Repeat size={20} />}
                   </button>
                 </div>
@@ -198,10 +196,12 @@ export default function Player() {
                     type="range" min={0} max={100} value={volume}
                     onChange={handleVolumeChange}
                     className="flex-1 h-1 accent-neon-pink cursor-pointer"
+                    aria-label="Volume"
                   />
                   <button
                     onClick={() => toggleLike(currentTrack.id)}
                     className={`ml-2 transition-all ${isLikedTrack ? 'text-neon-pink scale-110' : 'text-surface-500 hover:text-white'}`}
+                    aria-label={isLikedTrack ? 'Remove from favorites' : 'Add to favorites'}
                   >
                     <Heart size={20} fill={isLikedTrack ? 'currentColor' : 'none'} />
                   </button>
@@ -245,7 +245,7 @@ export default function Player() {
           >
             <div className={`relative w-12 h-12 rounded-xl overflow-hidden flex-shrink-0 ${isPlaying ? 'ring-1 ring-neon-pink/60' : ''}`}>
               {currentTrack.artwork ? (
-                <img src={currentTrack.artwork} alt={currentTrack.title} className={`w-full h-full object-cover ${isPlaying ? 'animate-slow-spin' : ''}`} style={{ animationDuration: '20s' }} />
+                <img src={currentTrack.artwork} alt={currentTrack.title} className={`w-full h-full object-cover ${isPlaying ? 'animate-slow-spin' : ''}`} />
               ) : (
                 <div className="w-full h-full bg-surface-800 flex items-center justify-center">
                   <Music2 size={20} className="text-surface-500" />
@@ -269,16 +269,17 @@ export default function Player() {
 
           {/* Center controls */}
           <div className="flex items-center gap-2 sm:gap-3">
-            <button onClick={toggleShuffle} className={`hidden sm:block transition-all p-1.5 rounded-lg ${shuffle ? 'text-neon-pink bg-neon-pink/10' : 'text-surface-500 hover:text-white hover:bg-white/[0.04]'}`}>
+            <button onClick={toggleShuffle} className={`hidden sm:block transition-all p-1.5 rounded-lg ${shuffle ? 'text-neon-pink bg-neon-pink/10' : 'text-surface-500 hover:text-white hover:bg-white/[0.04]'}`} aria-label={shuffle ? 'Disable shuffle' : 'Enable shuffle'}>
               <Shuffle size={15} />
             </button>
-            <button onClick={previous} className="text-surface-300 hover:text-white transition-all p-1.5 rounded-lg hover:bg-white/[0.04]">
+            <button onClick={previous} className="text-surface-300 hover:text-white transition-all p-1.5 rounded-lg hover:bg-white/[0.04]" aria-label="Previous track">
               <SkipBack size={20} fill="currentColor" />
             </button>
             <button
               onClick={togglePlay}
               disabled={isLoading}
               className="w-10 h-10 rounded-full bg-gradient-to-r from-neon-pink to-neon-purple flex items-center justify-center hover:scale-105 transition-all shadow-lg shadow-neon-pink/20 disabled:opacity-70"
+              aria-label={isPlaying ? 'Pause' : 'Play'}
             >
               {isLoading ? (
                 <Loader2 size={18} className="animate-spin text-white" />
@@ -288,10 +289,10 @@ export default function Player() {
                 <Play size={18} fill="white" className="text-white translate-x-0.5" />
               )}
             </button>
-            <button onClick={next} className="text-surface-300 hover:text-white transition-all p-1.5 rounded-lg hover:bg-white/[0.04]">
+            <button onClick={next} className="text-surface-300 hover:text-white transition-all p-1.5 rounded-lg hover:bg-white/[0.04]" aria-label="Next track">
               <SkipForward size={20} fill="currentColor" />
             </button>
-            <button onClick={toggleRepeat} className={`hidden sm:block transition-all p-1.5 rounded-lg ${repeat !== 'off' ? 'text-neon-cyan bg-neon-cyan/10' : 'text-surface-500 hover:text-white hover:bg-white/[0.04]'}`}>
+            <button onClick={toggleRepeat} className={`hidden sm:block transition-all p-1.5 rounded-lg ${repeat !== 'off' ? 'text-neon-cyan bg-neon-cyan/10' : 'text-surface-500 hover:text-white hover:bg-white/[0.04]'}`} aria-label={repeat === 'off' ? 'Enable repeat' : repeat === 'one' ? 'Repeat all' : 'Disable repeat'}>
               {repeat === 'one' ? <Repeat1 size={15} /> : <Repeat size={15} />}
             </button>
           </div>
@@ -306,6 +307,7 @@ export default function Player() {
             <button
               onClick={() => toggleLike(currentTrack.id)}
               className={`transition-all p-1.5 rounded-lg ${isLikedTrack ? 'text-neon-pink bg-neon-pink/10' : 'text-surface-500 hover:text-neon-pink hover:bg-neon-pink/5'}`}
+              aria-label={isLikedTrack ? 'Remove from favorites' : 'Add to favorites'}
             >
               <Heart size={16} fill={isLikedTrack ? 'currentColor' : 'none'} />
             </button>
@@ -315,6 +317,7 @@ export default function Player() {
                 type="range" min={0} max={100} value={volume}
                 onChange={handleVolumeChange}
                 className="w-20 h-1 accent-neon-pink cursor-pointer"
+                aria-label="Volume"
               />
             </div>
           </div>

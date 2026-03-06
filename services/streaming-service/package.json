@@ -6,7 +6,7 @@
   "dependencies": {
     "fastify": "^4.26.0", "@fastify/cors": "^9.0.0", "@fastify/helmet": "^11.1.0",
     "mongoose": "^8.1.0", "jsonwebtoken": "^9.0.0", "crypto-js": "^4.2.0",
-    "@auralux/common": "*", "@auralux/shared-types": "*", "@auralux/logger": "*", "@auralux/kafka-client": "*", "@auralux/redis-client": "*"
+    "@auralux/common": "workspace:*", "@auralux/shared-types": "workspace:*", "@auralux/logger": "workspace:*", "@auralux/kafka-client": "workspace:*", "@auralux/redis-client": "workspace:*"
   },
   "devDependencies": { "@types/jsonwebtoken": "^9.0.0", "typescript": "^5.4.0", "tsx": "^4.7.0", "rimraf": "^5.0.0" }
 }
