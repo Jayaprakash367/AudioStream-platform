@@ -101,6 +101,10 @@ export async function registerRoutes(app: FastifyInstance, config: GatewayConfig
       prefix: route.prefix,
       rewritePrefix: route.rewritePrefix || route.prefix,
       http2: false,
+      undici: {
+        connections: 128,
+        pipelining: 1,
+      },
       // Inject auth middleware for protected routes
       preHandler: route.isPublic ? undefined : authMiddleware,
       replyOptions: {
@@ -110,7 +114,6 @@ export async function registerRoutes(app: FastifyInstance, config: GatewayConfig
             ...headers,
             'x-correlation-id': originalRequest.headers['x-correlation-id'] || originalRequest.id,
             'x-forwarded-for': originalRequest.ip,
-            'x-gateway-timestamp': new Date().toISOString(),
           };
         },
       },

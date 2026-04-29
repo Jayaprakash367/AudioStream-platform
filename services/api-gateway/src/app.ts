@@ -25,6 +25,7 @@ export async function buildApp(config: GatewayConfig): Promise<FastifyInstance> 
     serviceName: config.serviceName,
     level: config.logLevel,
   });
+  const isDebugLogging = config.logLevel.toLowerCase() === 'debug';
 
   const app = Fastify({
     logger: false, // We use Winston instead
@@ -99,25 +100,48 @@ export async function buildApp(config: GatewayConfig): Promise<FastifyInstance> 
     },
   ]);
 
-  /** ── Request Logging ── */
-  app.addHook('onRequest', async (request) => {
-    logger.debug('Incoming request', {
-      method: request.method,
-      url: request.url,
-      ip: request.ip,
-      userAgent: request.headers['user-agent'],
-      correlationId: request.headers['x-correlation-id'],
+  /** ── Request Logging (optimized) ── */
+  if (isDebugLogging) {
+    app.addHook('onRequest', async (request) => {
+      logger.debug('Incoming request', {
+        method: request.method,
+        url: request.url,
+        ip: request.ip,
+        correlationId: request.headers['x-correlation-id'],
+      });
     });
-  });
+  }
 
   app.addHook('onResponse', async (request, reply) => {
-    logger.info('Request completed', {
-      method: request.method,
-      url: request.url,
-      statusCode: reply.statusCode,
-      responseTime: reply.getHeader('x-response-time'),
-      correlationId: request.headers['x-correlation-id'],
-    });
+    if (request.url.startsWith('/health') || request.url.startsWith('/metrics')) {
+      return;
+    }
+
+    const responseTime = reply.getHeader('x-response-time');
+    const responseTimeMs = typeof responseTime === 'string' ? Number.parseFloat(responseTime) : undefined;
+    const isSlow = typeof responseTimeMs === 'number' && responseTimeMs >= 300;
+    const isError = reply.statusCode >= 500;
+
+    if (isError || isSlow) {
+      logger.warn('Slow/error request detected', {
+        method: request.method,
+        url: request.url,
+        statusCode: reply.statusCode,
+        responseTime,
+        correlationId: request.headers['x-correlation-id'],
+      });
+      return;
+    }
+
+    if (isDebugLogging) {
+      logger.debug('Request completed', {
+        method: request.method,
+        url: request.url,
+        statusCode: reply.statusCode,
+        responseTime,
+        correlationId: request.headers['x-correlation-id'],
+      });
+    }
   });
 
   /** ── Reverse Proxy Routes ── */
