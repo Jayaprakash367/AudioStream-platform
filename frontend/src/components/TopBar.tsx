@@ -1,7 +1,8 @@
 'use client';
 
-import { Search, Bell, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Search, Bell, ChevronLeft, ChevronRight, Sparkles } from 'lucide-react';
 import { useState } from 'react';
+import { useNavStore } from '@/lib/store';
 
 interface TopBarProps {
   searchValue?: string;
@@ -11,10 +12,22 @@ interface TopBarProps {
 
 export default function TopBar({ searchValue = '', onSearchChange, showSearch = true }: TopBarProps) {
   const [localSearch, setLocalSearch] = useState(searchValue);
+  const { setActiveTab } = useNavStore();
 
   const handleChange = (val: string) => {
     setLocalSearch(val);
     onSearchChange?.(val);
+
+    // Auto-navigate to search page when user types
+    if (val.trim() && val.length > 0) {
+      setActiveTab('search');
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && localSearch.trim()) {
+      setActiveTab('search');
+    }
   };
 
   return (
@@ -31,14 +44,18 @@ export default function TopBar({ searchValue = '', onSearchChange, showSearch = 
 
       {/* Search bar */}
       {showSearch && (
-        <div className="relative flex-1 max-w-2xl">
-          <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-surface-500 group-hover:text-neon-cyan" />
+        <div className="relative flex-1 max-w-2xl group">
+          <Search size={20} className="absolute left-4 top-1/2 -translate-y-1/2 text-surface-500 group-focus-within:text-neon-pink transition-colors duration-300" />
           <input
             value={localSearch}
             onChange={e => handleChange(e.target.value)}
-            placeholder="What do you want to listen to?"
-            className="w-full bg-gradient-to-r from-surface-800/40 to-surface-800/20 border border-white/[0.08] rounded-full pl-12 pr-5 py-3 text-base text-surface-200 placeholder-surface-400 focus:outline-none focus:border-neon-pink/50 focus:from-surface-800/60 focus:to-surface-800/40 focus:shadow-lg focus:shadow-neon-pink/10 transition-all duration-300 hover:border-white/[0.12] backdrop-blur-sm"
+            onKeyDown={handleKeyDown}
+            placeholder="Search songs, artists, albums..."
+            className="w-full bg-gradient-to-r from-surface-800/60 to-surface-800/30 border-2 border-white/[0.08] rounded-full pl-12 pr-5 py-2.5 text-sm text-surface-200 placeholder-surface-400 focus:outline-none focus:border-neon-pink/40 focus:from-surface-800/80 focus:to-surface-800/50 focus:shadow-lg focus:shadow-neon-pink/20 transition-all duration-300 hover:border-white/[0.12] hover:from-surface-800/70 hover:to-surface-800/40 backdrop-blur-sm group-focus-within:ring-2 group-focus-within:ring-neon-pink/10"
           />
+          {localSearch && (
+            <Sparkles size={16} className="absolute right-4 top-1/2 -translate-y-1/2 text-neon-pink animate-pulse" />
+          )}
         </div>
       )}
 
