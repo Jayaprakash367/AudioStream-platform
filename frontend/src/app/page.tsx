@@ -43,46 +43,47 @@ export default function LandingPage() {
     <div className="min-h-screen bg-surface-950 text-white overflow-x-hidden">
       {/* ─── Navbar ───────────────────────────────── */}
       <nav className={`fixed top-0 inset-x-0 z-50 transition-all duration-300 ${
-        scrolled ? 'bg-surface-950/90 backdrop-blur-xl border-b border-white/[0.04] py-3' : 'py-5'
+        scrolled ? 'bg-surface-950/60 backdrop-blur-2xl border-b border-white/[0.08] py-3 shadow-lg shadow-black/20' : 'py-6'
       }`}>
         <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
-          <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-neon-pink via-neon-purple to-neon-blue flex items-center justify-center shadow-lg shadow-neon-pink/20">
-              <Music2 className="text-white" size={18} />
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-neon-pink via-neon-purple to-neon-blue flex items-center justify-center shadow-lg shadow-neon-pink/30 hover:scale-110 transition-transform">
+              <Music2 className="text-white" size={20} />
             </div>
-            <span className="text-lg font-bold font-display">
-              Aura<span className="text-gradient-pink">lux</span>
-              <span className="text-[10px] ml-1.5 px-1.5 py-0.5 rounded-full bg-neon-pink/15 text-neon-pink font-semibold align-middle">
+            <span className="text-xl font-bold font-display">
+              Aura<span className="text-transparent bg-gradient-to-r from-neon-pink to-neon-purple bg-clip-text">lux</span>
+              <span className="text-[11px] ml-2 px-2 py-0.5 rounded-full bg-gradient-to-r from-neon-pink/20 to-neon-purple/20 text-neon-pink font-bold align-middle border border-neon-pink/30">
                 X
               </span>
             </span>
           </div>
 
-          <div className="hidden md:flex items-center gap-8">
+          <div className="hidden md:flex items-center gap-10">
             {['Features', 'Languages', 'Pricing', 'About'].map(item => (
               <a
                 key={item}
                 href={`#${item.toLowerCase()}`}
-                className="text-sm text-surface-400 hover:text-white transition-colors font-medium"
+                className="text-sm text-surface-300 hover:text-neon-pink font-semibold transition-all duration-200 relative group"
               >
                 {item}
+                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-neon-pink to-neon-purple group-hover:w-full transition-all duration-300" />
               </a>
             ))}
           </div>
 
-          <div className="flex items-center gap-3">
-            <Link
+          <div className="flex items-center gap-4">
+            <a
               href="/login"
-              className="text-sm text-surface-300 hover:text-white transition-colors font-semibold px-4 py-2"
+              className="text-sm text-surface-300 hover:text-white font-semibold px-4 py-2 transition-colors"
             >
               Log in
-            </Link>
-            <Link
+            </a>
+            <a
               href="/signup"
-              className="text-sm bg-white text-surface-950 rounded-full px-5 py-2 font-bold hover:scale-105 transition-transform shadow-lg shadow-white/10"
+              className="text-sm bg-gradient-to-r from-neon-pink to-neon-purple text-white rounded-full px-6 py-2.5 font-bold hover:scale-105 transition-transform shadow-lg shadow-neon-pink/30 border border-neon-pink/50"
             >
               Sign up free
-            </Link>
+            </a>
           </div>
         </div>
       </nav>

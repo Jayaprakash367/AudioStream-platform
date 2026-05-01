@@ -1,5 +1,10 @@
 export const appConfig = {
-  apiUrl: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4001',
+  apiUrl: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000',
+  authServiceUrl: 'http://localhost:3001',
+  userServiceUrl: 'http://localhost:3002',
+  musicServiceUrl: 'http://localhost:3003',
+  streamingServiceUrl: 'http://localhost:3004',
+  playlistServiceUrl: 'http://localhost:3005',
   spotifyClientId: process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_ID || '',
   appName: 'Auralux X',
   playerName: 'Auralux X Web Player',

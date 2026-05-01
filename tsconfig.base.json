@@ -35,6 +35,7 @@
       "@auralux/kafka-client": ["./packages/kafka-client/dist"],
       "@auralux/redis-client": ["./packages/redis-client/dist"]
     }
+  
   },
   "exclude": ["node_modules", "dist", "**/*.test.ts", "**/*.spec.ts"]
 }

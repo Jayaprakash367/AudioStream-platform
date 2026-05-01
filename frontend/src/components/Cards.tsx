@@ -33,37 +33,39 @@ export function TrackRow({
 
   return (
     <div
-      className={`group flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-pointer transition-all duration-200 ${
-        isCurrent ? 'bg-white/[0.06] shadow-lg shadow-neon-pink/5' : 'hover:bg-white/[0.04]'
+      className={`group flex items-center gap-4 px-4 py-3 rounded-xl cursor-pointer transition-all duration-300 border ${
+        isCurrent 
+          ? 'bg-gradient-to-r from-neon-pink/10 to-neon-purple/10 shadow-lg shadow-neon-pink/15 border-neon-pink/30' 
+          : 'hover:bg-white/[0.05] border-transparent hover:border-white/[0.08] hover:shadow-md'
       }`}
       onClick={() => (isCurrent ? togglePlay() : play(track, queue))}
     >
       {/* Number / Equalizer / Loading */}
-      <div className="w-8 text-center flex-shrink-0">
+      <div className="w-8 text-center flex-shrink-0 text-surface-400 group-hover:text-neon-pink transition-colors">
         {isCurrent && isLoading ? (
-          <Loader2 size={14} className="animate-spin text-neon-pink mx-auto" />
+          <Loader2 size={16} className="animate-spin text-neon-pink mx-auto" />
         ) : isCurrent && isPlaying ? (
-          <div className="flex items-end justify-center gap-[2px] h-4">
-            <div className="w-[3px] bg-neon-pink rounded-full animate-equalizer-1" />
-            <div className="w-[3px] bg-neon-pink rounded-full animate-equalizer-2" />
-            <div className="w-[3px] bg-neon-pink rounded-full animate-equalizer-3" />
+          <div className="flex items-end justify-center gap-1 h-4">
+            <div className="w-1 bg-gradient-to-t from-neon-pink to-neon-purple rounded-full animate-equalizer-1" />
+            <div className="w-1 bg-gradient-to-t from-neon-purple to-neon-blue rounded-full animate-equalizer-2" />
+            <div className="w-1 bg-gradient-to-t from-neon-blue to-neon-cyan rounded-full animate-equalizer-3" />
           </div>
         ) : (
           <>
-            <span className="text-sm text-surface-500 group-hover:hidden block">{index + 1}</span>
-            <Play size={14} className="hidden group-hover:block text-white mx-auto" fill="currentColor" />
+            <span className="text-sm font-semibold group-hover:hidden block">{index + 1}</span>
+            <Play size={16} className="hidden group-hover:block text-neon-pink mx-auto" fill="currentColor" />
           </>
         )}
       </div>
 
       {/* Artwork */}
       {!compact && (
-        <div className="w-10 h-10 rounded-lg bg-surface-800 flex-shrink-0 overflow-hidden">
+        <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-neon-pink/20 to-neon-purple/20 flex-shrink-0 overflow-hidden shadow-md border border-white/[0.08] group-hover:shadow-lg group-hover:shadow-neon-pink/20 transition-all">
           {track.artwork ? (
-            <img src={track.artwork} alt={track.title} className="w-full h-full object-cover" onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }} />
+            <img src={track.artwork} alt={track.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }} />
           ) : (
             <div className="w-full h-full flex items-center justify-center">
-              <Music2 size={16} className="text-surface-600" />
+              <Music2 size={18} className="text-surface-600" />
             </div>
           )}
         </div>
@@ -71,23 +73,23 @@ export function TrackRow({
 
       {/* Info */}
       <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-1.5">
-          <span className={`text-sm font-medium truncate transition-colors ${isCurrent ? 'text-neon-pink' : 'text-surface-100 group-hover:text-white'}`}>
+        <div className="flex items-center gap-2">
+          <span className={`text-sm font-bold truncate transition-colors ${isCurrent ? 'text-neon-pink' : 'text-surface-100 group-hover:text-white'}`}>
             {track.title}
           </span>
           <SourceDot source={track.source} />
         </div>
-        <div className="text-xs text-surface-500 truncate">{track.artist}</div>
+        <div className="text-xs text-surface-400 group-hover:text-surface-300 truncate transition-colors">{track.artist}</div>
       </div>
 
       {/* Album (desktop) */}
       {!compact && (
-        <div className="hidden lg:block w-40 text-xs text-surface-500 truncate">{track.album}</div>
+        <div className="hidden lg:block w-40 text-xs text-surface-500 group-hover:text-surface-400 truncate transition-colors">{track.album}</div>
       )}
 
       {/* Language tag */}
       {track.language && track.language !== 'Unknown' && (
-        <span className="hidden md:block text-[10px] text-surface-600 bg-surface-800/60 px-2 py-0.5 rounded-full">
+        <span className="hidden md:block text-[10px] text-surface-400 bg-gradient-to-r from-neon-cyan/10 to-neon-blue/10 px-2 py-1 rounded-lg border border-neon-cyan/20 font-semibold">
           {track.language}
         </span>
       )}
@@ -96,7 +98,7 @@ export function TrackRow({
       <div className="flex items-center gap-2">
         <button
           onClick={(e) => { e.stopPropagation(); toggleLike(track.id); }}
-          className={`p-1 rounded-lg transition-all ${isLikedTrack ? 'text-neon-pink opacity-100' : 'text-surface-600 opacity-0 group-hover:opacity-100 hover:text-surface-300'}`}
+          className={`p-2 rounded-lg transition-all ${isLikedTrack ? 'text-neon-pink bg-neon-pink/10 opacity-100' : 'text-surface-600 opacity-0 group-hover:opacity-100 hover:text-surface-300 hover:bg-white/5'}`}
           aria-label={isLikedTrack ? 'Remove from favorites' : 'Add to favorites'}
         >
           <Heart size={14} fill={isLikedTrack ? 'currentColor' : 'none'} />

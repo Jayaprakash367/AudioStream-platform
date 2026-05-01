@@ -29,25 +29,27 @@ function QuickPlayCard({ track, queue }: { track: Track; queue: Track[] }) {
   const isCurrent = currentTrack?.id === track.id;
   return (
     <div
-      className={`flex items-center gap-3 bg-surface-800/50 hover:bg-surface-700/60 rounded-xl px-3 py-2.5 cursor-pointer transition-all group ${isCurrent ? 'ring-1 ring-neon-pink/40' : ''}`}
+      className={`flex items-center gap-4 bg-gradient-to-br from-surface-800/40 to-surface-900/40 hover:from-surface-700/60 hover:to-surface-800/60 rounded-2xl px-4 py-3.5 cursor-pointer transition-all duration-300 border border-white/[0.08] hover:border-neon-pink/30 group backdrop-blur-lg hover:shadow-lg hover:shadow-neon-pink/10 ${isCurrent ? 'ring-2 ring-neon-pink shadow-lg shadow-neon-pink/20' : ''}`}
       onClick={() => (isCurrent ? togglePlay() : play(track, queue))}
     >
-      <div className="w-11 h-11 rounded-lg overflow-hidden flex-shrink-0 bg-surface-700">
-        {track.artwork && <img src={track.artwork} alt={track.title} className="w-full h-full object-cover" />}
+      <div className="w-14 h-14 rounded-xl overflow-hidden flex-shrink-0 bg-gradient-to-br from-neon-pink/20 to-neon-purple/20 shadow-lg">
+        {track.artwork && <img src={track.artwork} alt={track.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" />}
       </div>
       <div className="flex-1 min-w-0">
-        <p className="text-xs font-semibold truncate">{track.title}</p>
-        <p className="text-[10px] text-surface-500 truncate">{track.artist}</p>
+        <p className="text-sm font-bold truncate group-hover:text-neon-pink transition-colors">{track.title}</p>
+        <p className="text-xs text-surface-400 group-hover:text-surface-300 truncate transition-colors">{track.artist}</p>
       </div>
-      <div className="opacity-0 group-hover:opacity-100 transition-opacity">
+      <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
         {isCurrent && isPlaying ? (
-          <div className="flex items-end gap-[2px] h-4 pr-1">
-            <div className="w-[2px] bg-neon-pink rounded-full animate-equalizer-1" />
-            <div className="w-[2px] bg-neon-pink rounded-full animate-equalizer-2" />
-            <div className="w-[2px] bg-neon-pink rounded-full animate-equalizer-3" />
+          <div className="flex items-end gap-1 h-5 pr-1">
+            <div className="w-1 bg-gradient-to-t from-neon-pink to-neon-purple rounded-full animate-equalizer-1" />
+            <div className="w-1 bg-gradient-to-t from-neon-purple to-neon-blue rounded-full animate-equalizer-2" />
+            <div className="w-1 bg-gradient-to-t from-neon-blue to-neon-cyan rounded-full animate-equalizer-3" />
           </div>
         ) : (
-          <Play size={14} fill="currentColor" className="text-white" />
+          <div className="w-8 h-8 rounded-full bg-gradient-to-r from-neon-pink to-neon-purple flex items-center justify-center">
+            <Play size={16} fill="currentColor" className="text-white ml-0.5" />
+          </div>
         )}
       </div>
     </div>
@@ -119,26 +121,30 @@ export default function HomePage() {
   return (
     <div className="flex-1 overflow-y-auto px-6 py-6 pb-32 space-y-10">
       {/* ── Greeting ── */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between mb-2">
         <div>
-          <h1 className="text-2xl font-bold font-display">{greeting} 👋</h1>
-          <p className="text-sm text-surface-400 mt-0.5">What do you want to listen to today?</p>
+          <h1 className="text-4xl font-bold font-display bg-gradient-to-r from-neon-pink via-neon-purple to-neon-blue bg-clip-text text-transparent">{greeting} 👋</h1>
+          <p className="text-base text-surface-300 mt-2 font-medium">What do you want to listen to today?</p>
         </div>
         <div className="flex items-center gap-3">
-          <div className="flex items-center gap-2 bg-surface-800/40 border border-white/[0.06] px-3 py-1.5 rounded-full">
-            <Globe2 size={12} className="text-neon-cyan" />
-            <span className="text-xs text-surface-400">Streaming</span>
-            <span className="w-1.5 h-1.5 bg-neon-cyan rounded-full animate-pulse" />
+          <div className="flex items-center gap-2 bg-gradient-to-r from-neon-cyan/10 to-neon-blue/10 border border-neon-cyan/30 px-4 py-2 rounded-full backdrop-blur-md hover:border-neon-cyan/50 transition-all duration-300 group">
+            <Globe2 size={14} className="text-neon-cyan group-hover:animate-spin-slow" />
+            <span className="text-sm font-semibold text-neon-cyan">Streaming Live</span>
+            <span className="w-2 h-2 bg-neon-cyan rounded-full animate-pulse" />
           </div>
         </div>
       </div>
 
       {/* ── Quick play grid ── */}
       <section>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+        <h2 className="text-lg font-bold font-display mb-4 flex items-center gap-2">
+          <Zap size={18} className="text-neon-pink" />
+          Trending Now
+        </h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {loadingTrending
             ? Array.from({ length: 6 }).map((_, i) => (
-                <div key={i} className="h-16 bg-surface-800/50 rounded-xl animate-pulse" />
+                <div key={i} className="h-20 bg-gradient-to-br from-surface-800/50 to-surface-900/50 rounded-2xl animate-pulse backdrop-blur-md" />
               ))
             : trending.slice(0, 6).map((t) => (
                 <QuickPlayCard key={t.id} track={t} queue={trending} />

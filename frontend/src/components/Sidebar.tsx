@@ -32,57 +32,57 @@ export default function Sidebar() {
     <aside
       className={`${
         sidebarOpen ? 'w-72' : 'w-20'
-      } flex-shrink-0 bg-surface-950 flex flex-col transition-all duration-300 relative z-20 border-r border-white/[0.04]`}
+      } flex-shrink-0 bg-gradient-to-b from-surface-900/60 to-surface-950/80 flex flex-col transition-all duration-300 relative z-20 border-r border-white/[0.06] backdrop-blur-xl`}
     >
       {/* Logo */}
-      <div className="flex items-center gap-3 px-5 py-5 border-b border-white/[0.04]">
-        <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-neon-pink via-neon-purple to-neon-blue flex items-center justify-center flex-shrink-0 shadow-lg shadow-neon-pink/20">
-          <Music2 className="text-white" size={20} />
+      <div className="flex items-center gap-3 px-5 py-6 border-b border-white/[0.06]">
+        <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-neon-pink via-neon-purple to-neon-blue flex items-center justify-center flex-shrink-0 shadow-lg shadow-neon-pink/30 hover:scale-110 transition-transform">
+          <Music2 className="text-white" size={22} />
         </div>
         {sidebarOpen && (
           <div className="animate-fade-in">
             <span className="text-lg font-bold font-display">
-              Aura<span className="text-gradient-pink">lux</span>
+              Aura<span className="text-transparent bg-gradient-to-r from-neon-pink to-neon-purple bg-clip-text">lux</span>
             </span>
-            <span className="text-[10px] ml-1.5 px-1.5 py-0.5 rounded-full bg-neon-pink/20 text-neon-pink font-semibold">
+            <span className="text-[10px] ml-1.5 px-2 py-0.5 rounded-full bg-gradient-to-r from-neon-pink/20 to-neon-purple/20 text-neon-pink font-semibold border border-neon-pink/30">
               X
             </span>
           </div>
         )}
         <button
           onClick={toggleSidebar}
-          className="ml-auto text-surface-500 hover:text-white transition-colors p-1 rounded-lg hover:bg-white/5"
+          className="ml-auto text-surface-500 hover:text-neon-pink transition-all p-2 rounded-lg hover:bg-neon-pink/10 active:scale-95"
         >
-          {sidebarOpen ? <ChevronLeft size={16} /> : <ChevronRight size={16} />}
+          {sidebarOpen ? <ChevronLeft size={18} /> : <ChevronRight size={18} />}
         </button>
       </div>
 
       {/* Main Nav */}
-      <nav className="px-3 py-4 space-y-0.5">
+      <nav className="px-3 py-5 space-y-1">
         {NAV_ITEMS.map(({ id, icon: Icon, label }) => (
           <button
             key={id}
             onClick={() => setActiveTab(id)}
-            className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 group relative ${
+            className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-200 group relative overflow-hidden ${
               activeTab === id
-                ? 'bg-gradient-to-r from-neon-pink/15 to-neon-purple/10 text-white'
-                : 'text-surface-400 hover:text-white hover:bg-white/[0.04]'
+                ? 'bg-gradient-to-r from-neon-pink/20 to-neon-purple/20 text-white border border-neon-pink/30 shadow-lg shadow-neon-pink/10'
+                : 'text-surface-400 hover:text-white hover:bg-white/[0.05] hover:border border-transparent'
             }`}
           >
             {activeTab === id && (
-              <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 rounded-r-full bg-gradient-to-b from-neon-pink to-neon-purple" />
+              <div className="absolute inset-0 bg-gradient-to-r from-neon-pink/5 to-neon-purple/5 blur-md opacity-50" />
             )}
             <Icon
-              size={18}
+              size={20}
               className={
                 activeTab === id
-                  ? 'text-neon-pink'
-                  : 'text-surface-500 group-hover:text-surface-300'
+                  ? 'text-neon-pink transition-all group-hover:scale-110'
+                  : 'text-surface-500 group-hover:text-surface-300 group-hover:scale-105 transition-transform'
               }
             />
-            {sidebarOpen && <span>{label}</span>}
+            {sidebarOpen && <span className="relative">{label}</span>}
             {id === 'liked' && sidebarOpen && liked.size > 0 && (
-              <span className="ml-auto text-[10px] bg-neon-pink/20 text-neon-pink px-1.5 py-0.5 rounded-full font-semibold">
+              <span className="ml-auto text-xs bg-gradient-to-r from-neon-pink/30 to-neon-purple/30 text-neon-pink px-2 py-1 rounded-full font-bold border border-neon-pink/20">
                 {liked.size}
               </span>
             )}

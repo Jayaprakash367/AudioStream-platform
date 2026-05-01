@@ -18,41 +18,41 @@ export default function TopBar({ searchValue = '', onSearchChange, showSearch = 
   };
 
   return (
-    <header className="flex items-center justify-between px-6 py-3 bg-surface-950/60 backdrop-blur-xl border-b border-white/[0.03] flex-shrink-0 sticky top-0 z-10">
+    <header className="flex items-center justify-between px-6 py-4 bg-gradient-to-b from-surface-900/80 to-surface-950/60 backdrop-blur-xl border-b border-white/[0.06] flex-shrink-0 sticky top-0 z-10 shadow-sm">
       {/* Navigation arrows */}
-      <div className="flex items-center gap-2 mr-4">
-        <button className="w-8 h-8 rounded-full bg-black/30 flex items-center justify-center text-surface-400 hover:text-white transition-colors">
-          <ChevronLeft size={16} />
+      <div className="flex items-center gap-3 mr-6">
+        <button className="w-9 h-9 rounded-full bg-gradient-to-r from-white/10 to-white/5 hover:from-neon-pink/20 hover:to-neon-purple/20 flex items-center justify-center text-surface-400 hover:text-neon-pink transition-all duration-300 border border-white/10 hover:border-neon-pink/30 group">
+          <ChevronLeft size={18} className="group-hover:scale-110 transition-transform" />
         </button>
-        <button className="w-8 h-8 rounded-full bg-black/30 flex items-center justify-center text-surface-400 hover:text-white transition-colors">
-          <ChevronRight size={16} />
+        <button className="w-9 h-9 rounded-full bg-gradient-to-r from-white/10 to-white/5 hover:from-neon-pink/20 hover:to-neon-purple/20 flex items-center justify-center text-surface-400 hover:text-neon-pink transition-all duration-300 border border-white/10 hover:border-neon-pink/30 group">
+          <ChevronRight size={18} className="group-hover:scale-110 transition-transform" />
         </button>
       </div>
 
       {/* Search bar */}
       {showSearch && (
-        <div className="relative flex-1 max-w-lg">
-          <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-surface-500" />
+        <div className="relative flex-1 max-w-2xl">
+          <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-surface-500 group-hover:text-neon-cyan" />
           <input
             value={localSearch}
             onChange={e => handleChange(e.target.value)}
             placeholder="What do you want to listen to?"
-            className="w-full bg-surface-800/60 border border-white/[0.06] rounded-full pl-11 pr-5 py-2.5 text-sm text-surface-200 placeholder-surface-500 focus:outline-none focus:border-neon-pink/30 focus:bg-surface-800/80 transition-all"
+            className="w-full bg-gradient-to-r from-surface-800/40 to-surface-800/20 border border-white/[0.08] rounded-full pl-12 pr-5 py-3 text-base text-surface-200 placeholder-surface-400 focus:outline-none focus:border-neon-pink/50 focus:from-surface-800/60 focus:to-surface-800/40 focus:shadow-lg focus:shadow-neon-pink/10 transition-all duration-300 hover:border-white/[0.12] backdrop-blur-sm"
           />
         </div>
       )}
 
       {/* Right side */}
-      <div className="flex items-center gap-3 ml-4">
-        <button className="relative text-surface-400 hover:text-white p-2 rounded-full hover:bg-white/5 transition-colors">
-          <Bell size={18} />
-          <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-neon-pink rounded-full animate-pulse" />
+      <div className="flex items-center gap-4 ml-6">
+        <button className="relative text-surface-400 hover:text-neon-cyan p-2.5 rounded-full hover:bg-neon-cyan/10 transition-all duration-300 border border-transparent hover:border-neon-cyan/30 group">
+          <Bell size={20} className="group-hover:scale-110 transition-transform" />
+          <span className="absolute top-2 right-2 w-2 h-2 bg-gradient-to-r from-neon-pink to-neon-purple rounded-full animate-pulse shadow-lg shadow-neon-pink/50" />
         </button>
-        <button className="flex items-center gap-2 bg-white/[0.04] hover:bg-white/[0.08] rounded-full pl-1 pr-3 py-1 transition-colors group">
-          <div className="w-7 h-7 rounded-full bg-gradient-to-br from-neon-pink to-neon-purple flex items-center justify-center text-[10px] font-bold shadow-md">
+        <button className="flex items-center gap-3 bg-gradient-to-r from-surface-800/50 to-surface-900/50 hover:from-surface-700/50 hover:to-surface-800/50 rounded-full pl-1.5 pr-4 py-1.5 transition-all duration-300 border border-white/[0.08] hover:border-neon-pink/30 hover:shadow-lg hover:shadow-neon-pink/10 group">
+          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-neon-pink via-neon-purple to-neon-blue flex items-center justify-center text-[11px] font-bold shadow-lg shadow-neon-pink/30 group-hover:scale-110 transition-transform">
             JK
           </div>
-          <span className="text-xs font-medium text-surface-200 group-hover:text-white transition-colors">
+          <span className="text-sm font-semibold text-surface-200 group-hover:text-white transition-colors">
             Jayaprakash
           </span>
         </button>

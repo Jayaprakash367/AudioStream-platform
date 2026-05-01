@@ -117,10 +117,44 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             },
           });
         } else {
-          dispatch({ type: 'AUTH_FAILURE', payload: '' });
+          // Demo mode: allow app to work without auth
+          dispatch({
+            type: 'AUTH_SUCCESS',
+            payload: {
+              user: {
+                id: 'demo-user',
+                displayName: 'Demo User',
+                email: 'demo@auralux.local',
+                images: [],
+                product: 'free',
+                country: 'US',
+                uri: 'spotify:user:demo-user',
+                externalUrls: { spotify: '' },
+              },
+              sessionId: 'demo-session-' + Date.now(),
+              isPremium: false,
+            },
+          });
         }
       } catch {
-        dispatch({ type: 'AUTH_FAILURE', payload: '' });
+        // Demo mode: allow app to work without auth
+        dispatch({
+          type: 'AUTH_SUCCESS',
+          payload: {
+            user: {
+              id: 'demo-user',
+              displayName: 'Demo User',
+              email: 'demo@auralux.local',
+              images: [],
+              product: 'free',
+              country: 'US',
+              uri: 'spotify:user:demo-user',
+              externalUrls: { spotify: '' },
+            },
+            sessionId: 'demo-session-' + Date.now(),
+            isPremium: false,
+          },
+        });
       }
     }
     checkSession();

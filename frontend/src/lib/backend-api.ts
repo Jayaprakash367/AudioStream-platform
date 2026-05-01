@@ -3,10 +3,14 @@
  * Connects to Auralux backend services for catalog, streaming, and real-time updates
  */
 
+import { appConfig } from './config';
+
 // ─── Configuration ───────────────────────────────────────────────────────────
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
-const STREAMING_URL = process.env.NEXT_PUBLIC_STREAMING_URL || 'http://localhost:3006';
+const API_BASE_URL = appConfig.apiUrl;
+const STREAMING_URL = appConfig.streamingServiceUrl;
+const MUSIC_URL = appConfig.musicServiceUrl;
+const AUTH_URL = appConfig.authServiceUrl;
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
