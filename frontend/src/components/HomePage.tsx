@@ -1,9 +1,9 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { Play, Globe2, Zap, Sparkles } from 'lucide-react';
+import { Play, Globe2, Zap, Sparkles, Disc3 } from 'lucide-react';
 import {
-  searchITunes, getITunesTrending, getByLanguage,
+  searchITunes, getITunesTrending, getByLanguage, getClassicByDecade,
   LANGUAGE_LIST, type Track,
 } from '@/lib/music-api';
 import {
@@ -62,12 +62,15 @@ export default function HomePage() {
   const [featured, setFeatured] = useState<Track[]>([]);
   const [langSongs, setLangSongs] = useState<Track[]>([]);
   const [moodSongs, setMoodSongs] = useState<Track[]>([]);
+  const [classicSongs, setClassicSongs] = useState<Track[]>([]);
   const [activeLang, setActiveLang] = useState('Hindi');
   const [activeMood, setActiveMood] = useState(MOODS[0]);
+  const [activeDecade, setActiveDecade] = useState<'80s' | '90s' | '2000s'>('90s');
   const [loadingTrending, setLoadingTrending] = useState(true);
   const [loadingFeatured, setLoadingFeatured] = useState(true);
   const [loadingLang, setLoadingLang] = useState(true);
   const [loadingMood, setLoadingMood] = useState(true);
+  const [loadingClassic, setLoadingClassic] = useState(true);
 
   const hour = new Date().getHours();
   const greeting = hour < 12 ? 'Good Morning' : hour < 17 ? 'Good Afternoon' : 'Good Evening';
@@ -115,6 +118,17 @@ export default function HomePage() {
       .finally(() => { if (!cancelled) setLoadingMood(false); });
     return () => { cancelled = true; };
   }, [activeMood]);
+
+  // ── Classic songs by decade ──
+  useEffect(() => {
+    let cancelled = false;
+    setLoadingClassic(true);
+    getClassicByDecade(activeDecade, 12)
+      .then((res) => { if (!cancelled) setClassicSongs(res); })
+      .catch(() => {})
+      .finally(() => { if (!cancelled) setLoadingClassic(false); });
+    return () => { cancelled = true; };
+  }, [activeDecade]);
 
   const featuredTrack = trending[0] || featured[0];
 
@@ -284,6 +298,42 @@ export default function HomePage() {
         ) : (
           <div className="space-y-1">
             {moodSongs.map((t, i) => <TrackRow key={t.id} track={t} index={i} queue={moodSongs} />)}
+          </div>
+        )}
+      </section>
+
+      {/* ── Classic Hits by Decade ── */}
+      <section>
+        <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
+          <Disc3 size={20} className="text-neon-purple" />
+          Classic Hits
+        </h2>
+        <div className="flex items-center gap-2 mb-6">
+          {(['80s', '90s', '2000s'] as const).map((d) => (
+            <button
+              key={d}
+              onClick={() => setActiveDecade(d)}
+              className={`px-4 py-2 rounded-full text-sm font-semibold transition-all ${
+                activeDecade === d
+                  ? 'bg-gradient-to-r from-neon-pink to-neon-purple text-white shadow-lg'
+                  : 'bg-surface-800/60 text-surface-300 hover:bg-surface-700/60'
+              }`}
+            >
+              {d}
+            </button>
+          ))}
+        </div>
+        {loadingClassic ? (
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+            {Array.from({ length: 6 }).map((_, i) => <CardSkeleton key={i} />)}
+          </div>
+        ) : classicSongs.length === 0 ? (
+          <div className="text-center py-12">
+            <p className="text-surface-500 text-sm">No classic songs found for {activeDecade}</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+            {classicSongs.map((t) => <TrackCard key={t.id} track={t} queue={classicSongs} />)}
           </div>
         )}
       </section>

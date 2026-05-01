@@ -360,3 +360,46 @@ export async function getByMood(mood: string): Promise<Track[]> {
   const query = MOOD_QUERIES[mood] || `${mood} music`;
   return searchITunes(query, 20);
 }
+
+// ─── Classic Songs (80s-2000s) ──────────────────────────────────────────────
+
+export const CLASSIC_QUERIES: Record<string, string[]> = {
+  '80s': [
+    'michael jackson', 'prince 80s', 'david bowie', 'queen 80s', 'billie jean',
+    'a-ha', 'duran duran', 'depeche mode', 'new order', 'the cure 80s',
+  ],
+  '90s': [
+    'nirvana', 'pearl jam', 'soundgarden', 'radiohead 90s', 'oasis',
+    'britney spears', 'backstreet boys', 'spice girls', 'eminem 90s', 'metallica',
+  ],
+  '2000s': [
+    'britney spears 2000s', 'usher', 'beyonce 2000s', 'usher yeah', 'nelly 2000s',
+    'eminem slim shady', 'outkast', 'missy elliott', 'jay-z 2000s', '50 cent',
+  ],
+};
+
+export async function getClassicByDecade(decade: '80s' | '90s' | '2000s', limit = 25): Promise<Track[]> {
+  const queries = CLASSIC_QUERIES[decade] || [];
+  const perQuery = Math.ceil(limit / queries.length) + 1;
+
+  const results = await Promise.allSettled(
+    queries.map((q) => searchITunes(q, perQuery))
+  );
+
+  const seen = new Set<string>();
+  const tracks: Track[] = [];
+
+  for (const r of results) {
+    if (r.status === 'fulfilled') {
+      for (const t of r.value) {
+        const key = `${t.title.toLowerCase().trim()}-${t.artist.toLowerCase().trim()}`;
+        if (!seen.has(key)) {
+          seen.add(key);
+          tracks.push(t);
+        }
+      }
+    }
+  }
+
+  return tracks.slice(0, limit);
+}
