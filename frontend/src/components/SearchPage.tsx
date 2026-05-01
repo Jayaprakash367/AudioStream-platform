@@ -66,7 +66,12 @@ export default function SearchPage() {
   };
 
   const allTracks = results
-    ? [...results.saavn, ...results.itunes, ...results.deezer]
+    ? [
+        ...results.saavn.filter(t => t.isFullTrack),
+        ...results.itunes,
+        ...results.saavn.filter(t => !t.isFullTrack),
+        ...results.deezer,
+      ]
     : [];
 
   const filteredTracks =

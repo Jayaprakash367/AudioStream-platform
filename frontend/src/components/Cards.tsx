@@ -94,6 +94,18 @@ export function TrackRow({
         </span>
       )}
 
+      {/* Quality badge */}
+      {track.isFullTrack && (
+        <span className="text-[10px] font-bold text-white bg-gradient-to-r from-neon-pink/60 to-neon-purple/60 px-2.5 py-1.5 rounded-lg border border-neon-pink/40 shadow-lg shadow-neon-pink/20">
+          🎵 FULL
+        </span>
+      )}
+      {!track.isFullTrack && (
+        <span className="text-[10px] font-semibold text-surface-400 bg-surface-800/60 px-2 py-1 rounded-lg border border-surface-700/40">
+          Preview
+        </span>
+      )}
+
       {/* Actions */}
       <div className="flex items-center gap-2">
         <button

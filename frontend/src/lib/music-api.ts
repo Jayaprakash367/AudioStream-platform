@@ -303,12 +303,16 @@ export async function searchAll(query: string): Promise<{
   deezer: Track[];
 }> {
   const [saavn, itunes] = await Promise.allSettled([
-    searchJioSaavn(query, 15),
-    searchITunes(query, 20),
+    searchJioSaavn(query, 25),
+    searchITunes(query, 15),
   ]);
+
+  const saavnResults = saavn.status === 'fulfilled' ? saavn.value : [];
+  const itunesResults = itunes.status === 'fulfilled' ? itunes.value : [];
+
   return {
-    saavn: saavn.status === 'fulfilled' ? saavn.value : [],
-    itunes: itunes.status === 'fulfilled' ? itunes.value : [],
+    saavn: saavnResults,
+    itunes: itunesResults,
     deezer: [],
   };
 }
