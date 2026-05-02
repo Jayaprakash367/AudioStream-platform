@@ -3,7 +3,9 @@
 const nextConfig = {
   reactStrictMode: true,
   env: {
-    NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3100',
+    // Point to auth-service directly in dev (port 3001).
+    // In production set NEXT_PUBLIC_API_URL=https://api.auralux.io
+    NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001',
   },
   images: {
     remotePatterns: [

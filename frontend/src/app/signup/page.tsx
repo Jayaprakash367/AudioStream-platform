@@ -3,7 +3,8 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Music2, Eye, EyeOff, ArrowRight, Disc3, Check, Headphones, Sparkles, Globe, Zap } from 'lucide-react';
+import { Music2, Eye, EyeOff, ArrowRight, Disc3, Headphones, Sparkles, Globe, Zap } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
 
 const PERKS = [
   { icon: Headphones, text: 'Lossless Hi-Res audio' },
@@ -14,6 +15,8 @@ const PERKS = [
 
 export default function SignupPage() {
   const router = useRouter();
+  const { register } = useAuth();
+
   const [displayName, setDisplayName] = useState('');
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
@@ -35,23 +38,15 @@ export default function SignupPage() {
     setError('');
 
     try {
-      const res = await fetch('http://localhost:3100/auth/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ displayName, username, email, password }),
-      });
-
-      if (res.ok) {
-        router.push('/dashboard');
-      } else {
-        router.push('/dashboard');
-      }
-    } catch {
+      await register({ displayName, username, email, password });
       router.push('/dashboard');
+    } catch (err: any) {
+      setError(err.message || 'Registration failed. Please try again.');
     } finally {
       setLoading(false);
     }
   };
+
 
   return (
     <div className="min-h-screen bg-surface-950 flex relative overflow-hidden">

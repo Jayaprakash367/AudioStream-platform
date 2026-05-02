@@ -16,11 +16,15 @@ x-service-defaults: &service-defaults
     LOG_LEVEL: debug
     REDIS_HOST: redis
     REDIS_PORT: "6379"
+    REDIS_SESSION_TTL: "2592000"
     KAFKA_BROKERS: "kafka:29092"
-    CORS_ORIGIN: "*"
-    JWT_SECRET: dev-jwt-secret-change-in-prod
-    JWT_REFRESH_SECRET: dev-jwt-refresh-secret-change-in-prod
-    STREAM_SIGNING_SECRET: dev-stream-signing-secret
+    CORS_ORIGIN: "http://localhost:3000"
+    JWT_SECRET: ${JWT_SECRET:-auralux-dev-jwt-secret-CHANGE-IN-PRODUCTION}
+    JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET:-auralux-dev-refresh-secret-CHANGE-IN-PRODUCTION}
+    JWT_EXPIRES_IN: "15m"
+    JWT_REFRESH_EXPIRES_IN: "30d"
+    STREAM_SIGNING_SECRET: ${STREAM_SIGNING_SECRET:-auralux-dev-stream-signing-secret}
+    BCRYPT_SALT_ROUNDS: "12"
 
 services:
 
@@ -30,7 +34,10 @@ services:
     image: mongo:7
     container_name: auralux-mongo
     ports: ["27017:27017"]
-    volumes: [mongo-data:/data/db]
+    volumes:
+      - mongo-data:/data/db
+      # Auto-runs on first start (only when data volume is empty)
+      - ./infra/mongo/init-db.js:/docker-entrypoint-initdb.d/init-db.js:ro
     networks: [auralux]
     healthcheck:
       test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
