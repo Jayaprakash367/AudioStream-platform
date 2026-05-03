@@ -2,7 +2,6 @@ import type { Metadata, Viewport } from 'next';
 import { Inter, Outfit } from 'next/font/google';
 import './globals.css';
 import Providers from './providers';
-import NowPlayingBar from '@/components/player/NowPlayingBar';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -36,8 +35,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" className={`${inter.variable} ${outfit.variable}`}>
       <body className="min-h-screen bg-surface-950 text-zinc-50 antialiased font-sans selection:bg-neon-pink/30 selection:text-white">
         <Providers>
-          <main className="pb-[88px]">{children}</main>
-          <NowPlayingBar />
+          {children}
         </Providers>
       </body>
     </html>

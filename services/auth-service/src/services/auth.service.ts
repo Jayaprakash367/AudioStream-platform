@@ -440,7 +440,7 @@ export class AuthService {
         jti,
       },
       this.config.jwtSecret,
-      { expiresIn: TTL.ACCESS_TOKEN }
+      { expiresIn: TTL.ACCESS_TOKEN as any }
     );
 
     // Refresh token — long lived based on rememberMe

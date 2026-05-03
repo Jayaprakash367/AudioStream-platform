@@ -55,6 +55,7 @@ type AuthAction =
   | { type: 'CLEAR_ERROR' };
 
 interface AuthContextType extends AuthState {
+  isPremium: boolean;
   login: (email: string, password: string, rememberMe?: boolean) => Promise<void>;
   register: (data: {
     email: string;
@@ -69,7 +70,7 @@ interface AuthContextType extends AuthState {
 
 // ─── Constants ──────────────────────────────────────────────────────────────
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
 
 // Storage keys
 const KEYS = {
@@ -304,17 +305,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           throw new Error(json?.error || json?.message || 'Login failed');
         }
 
-        const { userId, accessToken, refreshToken, expiresIn } = json.data;
+        const { userId, accessToken, refreshToken, expiresIn, user: serverUser } = json.data;
 
-        // Build a minimal user object from token payload
-        const [, payloadB64] = accessToken.split('.');
-        const tokenPayload = JSON.parse(atob(payloadB64));
-        const user: AuraluxUser = {
+        // Use the full user object from the server response
+        const user: AuraluxUser = serverUser ?? {
           userId,
-          email: tokenPayload.email || email,
-          username: email.split('@')[0], // Temporary — hydrated by /auth/me
-          role: tokenPayload.role || 'LISTENER',
-          subscription: tokenPayload.subscription || 'FREE',
+          email: email.toLowerCase(),
+          username: email.split('@')[0],
+          role: 'LISTENER',
+          subscription: 'FREE',
           isEmailVerified: false,
           displayName: undefined,
         };
@@ -332,25 +331,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
         dispatch({ type: 'AUTH_SUCCESS', payload: { user, accessToken, rememberMe } });
         scheduleRefresh(expiresIn);
-
-        // Hydrate full user profile from backend asynchronously
-        fetch(`${API_BASE}/auth/me`, {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-            'x-user-id': userId,
-          },
-        })
-          .then((r) => r.json())
-          .then(({ data }) => {
-            if (data) {
-              const fullUser = { ...user, ...data };
-              storage.setItem(KEYS.USER, JSON.stringify(fullUser));
-              dispatch({ type: 'AUTH_SUCCESS', payload: { user: fullUser, accessToken, rememberMe } });
-            }
-          })
-          .catch(() => {}); // Non-critical
       } catch (err: any) {
         dispatch({ type: 'AUTH_FAILURE', payload: err.message });
+        throw err; // Re-throw so the form can show the error
       }
     },
     [scheduleRefresh]
@@ -453,8 +436,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   // ─── Context value ─────────────────────────────────────────────────────────
 
+  const isPremium = state.user?.subscription === 'PREMIUM' || state.user?.subscription === 'FAMILY';
+
   const value: AuthContextType = {
     ...state,
+    isPremium,
     login,
     register,
     logout,
