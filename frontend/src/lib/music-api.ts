@@ -52,63 +52,36 @@ export async function getITunesByGenre(genre: string, limit = 20): Promise<Track
   return searchJioSaavn(genre, limit);
 }
 
-// ─── Audius (Full Songs) ───────────────────────────────────────────────────
+// ─── JioSaavn (All Mainstream Songs via Proxy) ──────────────────────────────
 
-interface AudiusTrack {
-  id: string;
-  title: string;
-  user: { name: string };
-  artwork: { '480x480'?: string; '150x150'?: string };
-  duration: number;
-  genre: string;
-}
-
-const AUDIUS_APP_NAME = 'auralux';
-// Get a random host to avoid rate limiting
-const getAudiusHost = async () => {
-  try {
-    const res = await fetch('https://api.audius.co');
-    const data = await res.json();
-    return data.data[Math.floor(Math.random() * data.data.length)];
-  } catch {
-    return 'https://discoveryprovider.audius.co';
-  }
-};
-
-function parseAudiusTrack(t: AudiusTrack, host: string, langTag?: string): Track {
-  const streamUrl = `${host}/v1/tracks/${t.id}/stream?app_name=${AUDIUS_APP_NAME}`;
-  return {
-    id: `audius-${t.id}`,
-    title: t.title || 'Unknown',
-    artist: t.user?.name || 'Unknown Artist',
-    album: t.title, // Audius doesn't always have album names readily available
-    artwork: t.artwork?.['480x480'] || t.artwork?.['150x150'] || '',
-    previewUrl: streamUrl,
-    streamUrl,
-    duration: t.duration || 200,
-    source: 'audius',
-    language: langTag || 'English',
-    genre: t.genre || '',
-    isFullTrack: true, // Audius provides full tracks
-  };
-}
-
-/** Search Audius API */
 export async function searchJioSaavn(query: string, limit = 20): Promise<Track[]> {
-  const host = await getAudiusHost();
-  const data = await fetchJSON(
-    `${host}/v1/tracks/search?query=${encodeURIComponent(query)}&app_name=${AUDIUS_APP_NAME}&limit=${limit}`,
-    8000
-  );
-  const tracks: AudiusTrack[] = data?.data || [];
-  return tracks.map((t) => parseAudiusTrack(t, host));
+  try {
+    const data = await fetchJSON(
+      `/api/music?source=saavn&q=${encodeURIComponent(query)}&limit=${limit}`,
+      8000
+    );
+    const tracks = data?.data?.results || [];
+    return tracks.map((t: any) => ({
+      id: `saavn-${t.id}`,
+      title: t.title,
+      artist: t.artist,
+      album: t.album,
+      artwork: t.artwork,
+      previewUrl: t.streamUrl,
+      streamUrl: t.streamUrl,
+      duration: t.duration,
+      source: 'jiosaavn',
+      language: t.language,
+      genre: '',
+      isFullTrack: true,
+    }));
+  } catch {
+    return [];
+  }
 }
 
 export async function getJioSaavnTrending(limit = 20): Promise<Track[]> {
-  const host = await getAudiusHost();
-  const data = await fetchJSON(`${host}/v1/tracks/trending?app_name=${AUDIUS_APP_NAME}&limit=${limit}`, 8000);
-  const tracks: AudiusTrack[] = data?.data || [];
-  return tracks.map((t) => parseAudiusTrack(t, host));
+  return searchJioSaavn('trending 2025', limit);
 }
 
 // ─── Language-Specific Search (iTunes artist queries) ────────────────────────
@@ -221,14 +194,14 @@ export const getJioSaavnByLanguage = getByLanguage;
 // ─── Unified Search ──────────────────────────────────────────────────────────
 
 export async function searchAll(query: string): Promise<{
-  audius: Track[];
+  saavn: Track[];
   itunes: Track[];
   deezer: Track[];
 }> {
-  const audius = await searchJioSaavn(query, 30);
+  const saavn = await searchJioSaavn(query, 30);
 
   return {
-    audius,
+    saavn,
     itunes: [],
     deezer: [],
   };

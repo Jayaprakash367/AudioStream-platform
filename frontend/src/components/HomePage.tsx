@@ -13,6 +13,7 @@ import {
 import { PLAYLISTS, ARTISTS, GENRES } from '@/lib/data';
 import { PlaylistCard, ArtistCard, GenreCard } from '@/components/Cards';
 import { usePlayerStore } from '@/lib/store';
+import { useAuth } from '@/contexts/AuthContext';
 
 const MOODS = [
   { label: '😄 Happy', query: 'happy upbeat pop' },
@@ -72,6 +73,7 @@ export default function HomePage() {
   const [loadingMood, setLoadingMood] = useState(true);
   const [loadingClassic, setLoadingClassic] = useState(true);
 
+  const { user } = useAuth();
   const hour = new Date().getHours();
   const greeting = hour < 12 ? 'Good Morning' : hour < 17 ? 'Good Afternoon' : 'Good Evening';
 
@@ -137,7 +139,9 @@ export default function HomePage() {
       {/* ── Greeting ── */}
       <div className="flex items-center justify-between mb-2">
         <div>
-          <h1 className="text-4xl font-bold font-display bg-gradient-to-r from-neon-pink via-neon-purple to-neon-blue bg-clip-text text-transparent">{greeting} 👋</h1>
+          <h1 className="text-4xl font-bold font-display bg-gradient-to-r from-neon-pink via-neon-purple to-neon-blue bg-clip-text text-transparent">
+            {greeting}{user?.displayName ? `, ${user.displayName.split(' ')[0]}` : ''} 👋
+          </h1>
           <p className="text-base text-surface-300 mt-2 font-medium">What do you want to listen to today?</p>
         </div>
         <div className="flex items-center gap-3">

@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import { usePlayerStore, useNavStore } from '@/lib/store';
 import { PLAYLISTS } from '@/lib/data';
+import { useAuth } from '@/contexts/AuthContext';
 
 const NAV_ITEMS = [
   { id: 'home', icon: Home, label: 'Home' },
@@ -23,6 +24,7 @@ const NAV_ITEMS = [
 export default function Sidebar() {
   const { activeTab, setActiveTab, sidebarOpen, toggleSidebar } = useNavStore();
   const { liked } = usePlayerStore();
+  const { user, logout } = useAuth();
   const [hoveredPlaylist, setHoveredPlaylist] = useState<string | null>(null);
 
   const myPlaylists = PLAYLISTS.filter(p => p.creator === 'You');
@@ -168,31 +170,57 @@ export default function Sidebar() {
 
       {/* User footer */}
       <div className="px-3 py-4 border-t border-white/[0.04] mt-auto">
-        <div className="flex items-center gap-3 px-2">
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-neon-pink to-neon-purple flex items-center justify-center text-xs font-bold flex-shrink-0 shadow-lg shadow-neon-pink/20">
-            JK
-          </div>
-          {sidebarOpen && (
-            <div className="flex-1 min-w-0 animate-fade-in">
-              <div className="text-xs font-semibold truncate">Jayaprakash K</div>
-              <div className="flex items-center gap-1">
-                <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-neon-cyan/15 text-neon-cyan font-semibold">
-                  Premium
-                </span>
+        {user ? (
+          <div className="flex items-center gap-3 px-2">
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-neon-pink to-neon-purple flex items-center justify-center text-xs font-bold flex-shrink-0 shadow-lg shadow-neon-pink/20 uppercase">
+              {user.displayName
+                ? user.displayName.split(' ').map(n => n[0]).join('').substring(0, 2)
+                : user.username?.substring(0, 2) || 'AU'}
+            </div>
+            {sidebarOpen && (
+              <div className="flex-1 min-w-0 animate-fade-in">
+                <div className="text-xs font-semibold truncate">{user.displayName || user.username}</div>
+                <div className="flex items-center gap-1 mt-0.5">
+                  <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-semibold ${
+                    user.subscription?.toUpperCase() === 'PREMIUM' 
+                      ? 'bg-neon-cyan/15 text-neon-cyan border border-neon-cyan/20' 
+                      : 'bg-surface-800 text-surface-400 border border-white/5'
+                  }`}>
+                    {user.subscription || 'Free'}
+                  </span>
+                </div>
               </div>
+            )}
+            {sidebarOpen && (
+              <div className="flex gap-1 animate-fade-in">
+                <button className="text-surface-600 hover:text-surface-300 p-1.5 rounded-lg hover:bg-white/5 transition-colors" aria-label="Settings">
+                  <Settings size={14} />
+                </button>
+                <button onClick={logout} className="text-surface-600 hover:text-rose-400 p-1.5 rounded-lg hover:bg-white/5 transition-colors" aria-label="Log out">
+                  <LogOut size={14} />
+                </button>
+              </div>
+            )}
+          </div>
+        ) : (
+          <div className="flex items-center gap-3 px-2">
+            <div className="w-9 h-9 rounded-xl bg-surface-800 flex items-center justify-center text-xs font-bold flex-shrink-0 text-surface-500">
+              ?
             </div>
-          )}
-          {sidebarOpen && (
-            <div className="flex gap-1 animate-fade-in">
-              <button className="text-surface-600 hover:text-surface-300 p-1.5 rounded-lg hover:bg-white/5 transition-colors" aria-label="Settings">
-                <Settings size={14} />
-              </button>
-              <button className="text-surface-600 hover:text-rose-400 p-1.5 rounded-lg hover:bg-white/5 transition-colors" aria-label="Log out">
-                <LogOut size={14} />
-              </button>
-            </div>
-          )}
-        </div>
+            {sidebarOpen && (
+              <div className="flex-1 min-w-0 animate-fade-in">
+                <div className="text-xs font-semibold text-surface-400 truncate">Not Logged In</div>
+              </div>
+            )}
+            {sidebarOpen && (
+              <div className="flex gap-1 animate-fade-in">
+                <button onClick={() => window.location.href = '/login'} className="text-neon-pink hover:text-neon-pink/80 p-1.5 rounded-lg hover:bg-white/5 transition-colors" aria-label="Log in">
+                  <LogOut size={14} className="rotate-180" />
+                </button>
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </aside>
   );

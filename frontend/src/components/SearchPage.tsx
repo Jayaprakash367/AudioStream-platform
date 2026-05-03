@@ -27,10 +27,10 @@ function addRecent(q: string) {
 
 export default function SearchPage() {
   const [query, setQuery] = useState('');
-  const [results, setResults] = useState<{ audius: Track[]; itunes: Track[]; deezer: Track[] } | null>(null);
+  const [results, setResults] = useState<{ saavn: Track[]; itunes: Track[]; deezer: Track[] } | null>(null);
   const [loading, setLoading] = useState(false);
   const [recent, setRecent] = useState<string[]>(() => getRecent());
-  const [activeSource, setActiveSource] = useState<'all' | 'audius' | 'itunes' | 'deezer'>('all');
+  const [activeSource, setActiveSource] = useState<'all' | 'saavn' | 'itunes' | 'deezer'>('all');
   const { play } = usePlayerStore();
 
   const doSearch = useCallback(async (q: string) => {
@@ -43,7 +43,7 @@ export default function SearchPage() {
       addRecent(q.trim());
       setRecent(getRecent());
     } catch {
-      setResults({ audius: [], itunes: [], deezer: [] });
+      setResults({ saavn: [], itunes: [], deezer: [] });
     } finally {
       setLoading(false);
     }
@@ -67,7 +67,7 @@ export default function SearchPage() {
 
   const allTracks = results
     ? [
-        ...results.audius,
+        ...results.saavn,
         ...results.itunes,
         ...results.deezer,
       ]
@@ -76,8 +76,8 @@ export default function SearchPage() {
   const filteredTracks =
     activeSource === 'all'
       ? allTracks
-      : activeSource === 'audius'
-      ? results?.audius || []
+      : activeSource === 'saavn'
+      ? results?.saavn || []
       : activeSource === 'itunes'
       ? results?.itunes || []
       : results?.deezer || [];
@@ -114,7 +114,7 @@ export default function SearchPage() {
           {/* Source tabs */}
           {results && (
             <div className="flex items-center gap-2 mt-4 overflow-x-auto scrollbar-hide pb-2">
-              {(['all', 'audius', 'itunes', 'deezer'] as const).map(src => (
+              {(['all', 'saavn', 'itunes', 'deezer'] as const).map(src => (
                 <button
                   key={src}
                   onClick={() => setActiveSource(src)}
@@ -125,7 +125,7 @@ export default function SearchPage() {
                   }`}
                 >
                   {src === 'all' ? `All (${allTracks.length})` :
-                   src === 'audius' ? `Audius (${results.audius.length})` :
+                   src === 'saavn' ? `Auralux X HQ (${results.saavn.length})` :
                    src === 'itunes' ? `iTunes (${results.itunes.length})` :
                    `Deezer (${results.deezer.length})`}
                 </button>

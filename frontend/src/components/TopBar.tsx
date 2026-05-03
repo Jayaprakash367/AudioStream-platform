@@ -1,8 +1,10 @@
 'use client';
 
-import { Search, Bell, ChevronLeft, ChevronRight, Sparkles } from 'lucide-react';
+import { Search, Bell, ChevronLeft, ChevronRight, Sparkles, UserCircle } from 'lucide-react';
 import { useState } from 'react';
 import { useNavStore } from '@/lib/store';
+import { useAuth } from '@/contexts/AuthContext';
+import { useRouter } from 'next/navigation';
 
 interface TopBarProps {
   searchValue?: string;
@@ -13,6 +15,8 @@ interface TopBarProps {
 export default function TopBar({ searchValue = '', onSearchChange, showSearch = true }: TopBarProps) {
   const [localSearch, setLocalSearch] = useState(searchValue);
   const { setActiveTab } = useNavStore();
+  const { user } = useAuth();
+  const router = useRouter();
 
   const handleChange = (val: string) => {
     setLocalSearch(val);
@@ -65,14 +69,29 @@ export default function TopBar({ searchValue = '', onSearchChange, showSearch = 
           <Bell size={20} className="group-hover:scale-110 transition-transform" />
           <span className="absolute top-2 right-2 w-2 h-2 bg-gradient-to-r from-neon-pink to-neon-purple rounded-full animate-pulse shadow-lg shadow-neon-pink/50" />
         </button>
-        <button className="flex items-center gap-3 bg-gradient-to-r from-surface-800/50 to-surface-900/50 hover:from-surface-700/50 hover:to-surface-800/50 rounded-full pl-1.5 pr-4 py-1.5 transition-all duration-300 border border-white/[0.08] hover:border-neon-pink/30 hover:shadow-lg hover:shadow-neon-pink/10 group">
-          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-neon-pink via-neon-purple to-neon-blue flex items-center justify-center text-[11px] font-bold shadow-lg shadow-neon-pink/30 group-hover:scale-110 transition-transform">
-            JK
-          </div>
-          <span className="text-sm font-semibold text-surface-200 group-hover:text-white transition-colors">
-            Jayaprakash
-          </span>
-        </button>
+        
+        {user ? (
+          <button className="flex items-center gap-3 bg-gradient-to-r from-surface-800/50 to-surface-900/50 hover:from-surface-700/50 hover:to-surface-800/50 rounded-full pl-1.5 pr-4 py-1.5 transition-all duration-300 border border-white/[0.08] hover:border-neon-pink/30 hover:shadow-lg hover:shadow-neon-pink/10 group">
+            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-neon-pink via-neon-purple to-neon-blue flex items-center justify-center text-[11px] font-bold shadow-lg shadow-neon-pink/30 group-hover:scale-110 transition-transform uppercase">
+              {user.displayName
+                ? user.displayName.split(' ').map(n => n[0]).join('').substring(0, 2)
+                : user.username?.substring(0, 2) || 'AU'}
+            </div>
+            <span className="text-sm font-semibold text-surface-200 group-hover:text-white transition-colors truncate max-w-[120px]">
+              {user.displayName || user.username}
+            </span>
+          </button>
+        ) : (
+          <button 
+            onClick={() => router.push('/login')}
+            className="flex items-center gap-2 bg-white/5 hover:bg-white/10 rounded-full pl-3 pr-4 py-1.5 transition-all duration-300 border border-white/10 hover:border-white/20 group"
+          >
+            <UserCircle size={18} className="text-surface-400 group-hover:text-white transition-colors" />
+            <span className="text-sm font-semibold text-surface-200 group-hover:text-white transition-colors">
+              Log in
+            </span>
+          </button>
+        )}
       </div>
     </header>
   );

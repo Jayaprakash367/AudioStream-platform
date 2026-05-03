@@ -14,6 +14,9 @@ importers:
 
   frontend:
     dependencies:
+      '@saavn-labs/sdk':
+        specifier: ^0.1.5
+        version: 0.1.5
       '@tanstack/react-query':
         specifier: ^5.17.0
         version: 5.90.21(react@18.3.1)
@@ -23,6 +26,9 @@ importers:
       clsx:
         specifier: ^2.1.0
         version: 2.1.1
+      crypto-js:
+        specifier: ^4.2.0
+        version: 4.2.0
       framer-motion:
         specifier: ^11.0.0
         version: 11.18.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -187,12 +193,43 @@ importers:
         version: 5.9.3
 
   services/analytics-service:
+    dependencies:
+      '@auralux/common':
+        specifier: workspace:*
+        version: link:../../packages/common
+      '@auralux/kafka-client':
+        specifier: workspace:*
+        version: link:../../packages/kafka-client
+      '@auralux/logger':
+        specifier: workspace:*
+        version: link:../../packages/logger
+      '@auralux/redis-client':
+        specifier: workspace:*
+        version: link:../../packages/redis-client
+      '@auralux/shared-types':
+        specifier: workspace:*
+        version: link:../../packages/shared-types
+      fastify:
+        specifier: ^4.26.0
+        version: 4.29.1
+      mongoose:
+        specifier: ^8.1.0
+        version: 8.23.0
+      uuid:
+        specifier: ^9.0.0
+        version: 9.0.1
     devDependencies:
+      '@types/node':
+        specifier: ^20.10.0
+        version: 20.19.37
       rimraf:
-        specifier: ^5.0.5
+        specifier: ^5.0.0
         version: 5.0.10
+      tsx:
+        specifier: ^4.7.0
+        version: 4.21.0
       typescript:
-        specifier: ^5.3.3
+        specifier: ^5.4.0
         version: 5.9.3
 
   services/api-gateway:
@@ -1822,6 +1859,10 @@ packages:
 
   '@rushstack/eslint-patch@1.16.1':
     resolution: {integrity: sha512-TvZbIpeKqGQQ7X0zSCvPH9riMSFQFSggnfBjFZ1mEoILW+UuXCKwOoPcgjMwiUtRqFZ8jWhPJc4um14vC6I4ag==}
+
+  '@saavn-labs/sdk@0.1.5':
+    resolution: {integrity: sha512-h9jBStJ1/SJLzHCKi31uBexcwzKphBaAk/3bJs/i77WQ9BoQIErhQW9wkWXJXtE4mQvDpqyLGYph5/bJHzQ+7Q==}
+    engines: {node: '>=18'}
 
   '@sinclair/typebox@0.27.10':
     resolution: {integrity: sha512-MTBk/3jGLNB2tVxv6uLlFh1iu64iYOQ2PbdOSK3NW8JZsmlaOh2q6sdtKowBhfw8QFLmYNzTW4/oK4uATIi6ZA==}
@@ -5531,6 +5572,9 @@ packages:
   zod@3.25.76:
     resolution: {integrity: sha512-gzUt/qt81nXsFGKIFcC3YnfEAx5NkunCfnDlvuBSSFS02bcXu4Lmea0AFIUwbLWxWPx3d9p8S5QoaujKcNQxcQ==}
 
+  zod@4.4.2:
+    resolution: {integrity: sha512-IynmDyxsEsb9RKzO3J9+4SxXnl2FTFSzNBaKKaMV6tsSk0rw9gYw9gs+JFCq/qk2LCZ78KDwyj+Z289TijSkUw==}
+
   zustand@4.5.7:
     resolution: {integrity: sha512-CHOUy7mu3lbD6o6LJLfllpjkzhHXSBlX8B9+qPddUsIfeF5S/UZ5q0kmCsnRqT1UHFQZchNFDDzMbQsuesHWlw==}
     engines: {node: '>=12.7.0'}
@@ -6841,6 +6885,12 @@ snapshots:
   '@rtsao/scc@1.1.0': {}
 
   '@rushstack/eslint-patch@1.16.1': {}
+
+  '@saavn-labs/sdk@0.1.5':
+    dependencies:
+      '@types/crypto-js': 4.2.2
+      crypto-js: 4.2.0
+      zod: 4.4.2
 
   '@sinclair/typebox@0.27.10': {}
 
@@ -11232,6 +11282,8 @@ snapshots:
   yocto-queue@0.1.0: {}
 
   zod@3.25.76: {}
+
+  zod@4.4.2: {}
 
   zustand@4.5.7(@types/react@18.3.28)(react@18.3.1):
     dependencies:

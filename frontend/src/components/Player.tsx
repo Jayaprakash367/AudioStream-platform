@@ -25,8 +25,8 @@ function VolumeIcon({ volume }: { volume: number }) {
 function SourceBadge({ source, isFullTrack }: { source?: string; isFullTrack?: boolean }) {
   const map: Record<string, { label: string; color: string }> = {
     itunes: { label: 'Auralux X', color: 'text-neon-pink' },
-    jiosaavn: { label: 'Auralux X', color: 'text-neon-pink' },
-    audius: { label: 'Auralux X HQ', color: 'text-neon-cyan' },
+    jiosaavn: { label: 'Auralux X HQ', color: 'text-neon-cyan' },
+    audius: { label: 'Auralux X', color: 'text-neon-pink' },
     deezer: { label: 'Auralux X', color: 'text-neon-cyan' },
   };
   const b = map[source || ''];

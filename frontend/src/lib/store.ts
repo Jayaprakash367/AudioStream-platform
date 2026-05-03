@@ -225,7 +225,7 @@ export const useAuthStore = create<AuthState>((set) => ({
   isAuthenticated: false,
   user: null,
   login: (_email, _password) =>
-    set({ isAuthenticated: true, user: { name: 'Jayaprakash K', email: _email, avatar: 'JK', tier: 'Premium' } }),
+    set({ isAuthenticated: true, user: { name: 'User', email: _email, avatar: 'U', tier: 'Free' } }),
   signup: (name, email, _password) =>
     set({ isAuthenticated: true, user: { name, email, avatar: name.substring(0, 2).toUpperCase(), tier: 'Free' } }),
   logout: () => set({ isAuthenticated: false, user: null }),
