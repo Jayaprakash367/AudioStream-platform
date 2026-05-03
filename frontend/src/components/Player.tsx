@@ -26,6 +26,7 @@ function SourceBadge({ source, isFullTrack }: { source?: string; isFullTrack?: b
   const map: Record<string, { label: string; color: string }> = {
     itunes: { label: 'Auralux X', color: 'text-neon-pink' },
     jiosaavn: { label: 'Auralux X', color: 'text-neon-pink' },
+    audius: { label: 'Auralux X HQ', color: 'text-neon-cyan' },
     deezer: { label: 'Auralux X', color: 'text-neon-cyan' },
   };
   const b = map[source || ''];

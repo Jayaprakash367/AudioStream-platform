@@ -16,7 +16,7 @@ export interface Track {
   previewUrl: string | null;
   streamUrl: string | null;
   duration: number; // seconds
-  source: 'itunes' | 'jiosaavn' | 'deezer';
+  source: 'itunes' | 'jiosaavn' | 'deezer' | 'audius';
   language?: string;
   genre?: string;
   isFullTrack: boolean;
@@ -38,132 +38,77 @@ async function fetchJSON(url: string, timeoutMs = 10000): Promise<any> {
   }
 }
 
-// ─── iTunes (Primary — always works) ────────────────────────────────────────
+// ─── iTunes (Replaced by Audius for Full Songs) ──────────────────────────────
 
-function parseITunesResults(results: any[], langTag?: string): Track[] {
-  return (results || [])
-    .filter((r: any) => r.previewUrl)
-    .map((r: any): Track => ({
-      id: `itunes-${r.trackId}`,
-      title: r.trackName || 'Unknown',
-      artist: r.artistName || 'Unknown',
-      album: r.collectionName || '',
-      artwork: r.artworkUrl100?.replace('100x100', '500x500') || '',
-      previewUrl: r.previewUrl,
-      streamUrl: r.previewUrl,
-      duration: Math.round((r.trackTimeMillis || 30000) / 1000),
-      source: 'itunes',
-      genre: r.primaryGenreName || '',
-      language: langTag || detectLanguage(r.primaryGenreName) || 'English',
-      isFullTrack: false,
-    }));
-}
-
-function detectLanguage(genre?: string): string {
-  if (!genre) return 'English';
-  const g = genre.toLowerCase();
-  if (g.includes('bollywood') || g.includes('hindi')) return 'Hindi';
-  if (g.includes('tamil')) return 'Tamil';
-  if (g.includes('telugu')) return 'Telugu';
-  if (g.includes('punjabi')) return 'Punjabi';
-  if (g.includes('malayalam')) return 'Malayalam';
-  if (g.includes('kannada')) return 'Kannada';
-  if (g.includes('bengali')) return 'Bengali';
-  if (g.includes('marathi')) return 'Marathi';
-  if (g.includes('k-pop') || g.includes('korean')) return 'Korean';
-  if (g.includes('j-pop') || g.includes('japanese') || g.includes('anime')) return 'Japanese';
-  if (g.includes('latin') || g.includes('reggaeton') || g.includes('spanish')) return 'Spanish';
-  if (g.includes('arabic')) return 'Arabic';
-  if (g.includes('french')) return 'French';
-  if (g.includes('chinese') || g.includes('mandarin') || g.includes('c-pop')) return 'Chinese';
-  if (g.includes('brazilian') || g.includes('sertanejo') || g.includes('portuguese')) return 'Portuguese';
-  if (g.includes('turkish')) return 'Turkish';
-  return 'English';
-}
-
-/** Search iTunes via server proxy */
 export async function searchITunes(query: string, limit = 20): Promise<Track[]> {
-  // Try proxy first (avoids any CORS from iTunes CDN)
-  const proxyData = await fetchJSON(
-    `/api/music?source=itunes&q=${encodeURIComponent(query)}&limit=${limit}`
-  );
-  if (proxyData?.results?.length > 0) {
-    return parseITunesResults(proxyData.results);
-  }
-
-  // Direct fallback
-  const directData = await fetchJSON(
-    `https://itunes.apple.com/search?term=${encodeURIComponent(query)}&media=music&limit=${limit}&entity=song`
-  );
-  return parseITunesResults(directData?.results || []);
+  return searchJioSaavn(query, limit);
 }
 
 export async function getITunesTrending(limit = 20): Promise<Track[]> {
-  const queries = ['top hits 2025', 'pop hits 2025', 'trending music 2025'];
-  const query = queries[Math.floor(Math.random() * queries.length)];
-  return searchITunes(query, limit);
+  return getJioSaavnTrending(limit);
 }
 
 export async function getITunesByGenre(genre: string, limit = 20): Promise<Track[]> {
-  return searchITunes(genre, limit);
+  return searchJioSaavn(genre, limit);
 }
 
-// ─── JioSaavn (Bonus — full songs if API is up) ─────────────────────────────
+// ─── Audius (Full Songs) ───────────────────────────────────────────────────
 
-interface SaavnSong {
+interface AudiusTrack {
   id: string;
-  name: string;
-  artists?: { primary?: Array<{ name: string }> };
-  album?: { name: string; image?: Array<{ quality: string; url: string }> };
-  image?: Array<{ quality: string; url: string }>;
-  downloadUrl?: Array<{ quality: string; url: string }>;
-  duration?: number;
-  language?: string;
+  title: string;
+  user: { name: string };
+  artwork: { '480x480'?: string; '150x150'?: string };
+  duration: number;
+  genre: string;
 }
 
-function parseSaavnSong(s: SaavnSong, langTag?: string): Track {
-  const artistNames = (s.artists?.primary || []).map((a) => a.name).join(', ') || 'Unknown';
-  const images = s.album?.image || s.image || [];
-  const artwork =
-    images.find((i) => i.quality === '500x500')?.url ||
-    images.find((i) => i.quality === '150x150')?.url ||
-    images[images.length - 1]?.url ||
-    '';
-  const downloads = s.downloadUrl || [];
-  const streamUrl =
-    downloads.find((d) => d.quality === '320kbps')?.url ||
-    downloads.find((d) => d.quality === '160kbps')?.url ||
-    downloads.find((d) => d.quality === '96kbps')?.url ||
-    downloads[downloads.length - 1]?.url ||
-    null;
+const AUDIUS_APP_NAME = 'auralux';
+// Get a random host to avoid rate limiting
+const getAudiusHost = async () => {
+  try {
+    const res = await fetch('https://api.audius.co');
+    const data = await res.json();
+    return data.data[Math.floor(Math.random() * data.data.length)];
+  } catch {
+    return 'https://discoveryprovider.audius.co';
+  }
+};
+
+function parseAudiusTrack(t: AudiusTrack, host: string, langTag?: string): Track {
+  const streamUrl = `${host}/v1/tracks/${t.id}/stream?app_name=${AUDIUS_APP_NAME}`;
   return {
-    id: `saavn-${s.id}`,
-    title: s.name || 'Unknown',
-    artist: artistNames,
-    album: s.album?.name || '',
-    artwork,
+    id: `audius-${t.id}`,
+    title: t.title || 'Unknown',
+    artist: t.user?.name || 'Unknown Artist',
+    album: t.title, // Audius doesn't always have album names readily available
+    artwork: t.artwork?.['480x480'] || t.artwork?.['150x150'] || '',
     previewUrl: streamUrl,
     streamUrl,
-    duration: s.duration || 210,
-    source: 'jiosaavn',
-    language: langTag || s.language || 'Hindi',
-    genre: '',
-    isFullTrack: !!streamUrl,
+    duration: t.duration || 200,
+    source: 'audius',
+    language: langTag || 'English',
+    genre: t.genre || '',
+    isFullTrack: true, // Audius provides full tracks
   };
 }
 
-/** Try JioSaavn via proxy — returns empty array if API is down */
+/** Search Audius API */
 export async function searchJioSaavn(query: string, limit = 20): Promise<Track[]> {
+  const host = await getAudiusHost();
   const data = await fetchJSON(
-    `/api/music?source=saavn&q=${encodeURIComponent(query)}&limit=${limit}`,
-    6000
+    `${host}/v1/tracks/search?query=${encodeURIComponent(query)}&app_name=${AUDIUS_APP_NAME}&limit=${limit}`,
+    8000
   );
-  const songs: SaavnSong[] = data?.data?.results || [];
-  return songs.map((s) => parseSaavnSong(s)).filter((t) => t.streamUrl);
+  const tracks: AudiusTrack[] = data?.data || [];
+  return tracks.map((t) => parseAudiusTrack(t, host));
 }
 
 export async function getJioSaavnTrending(limit = 20): Promise<Track[]> {
-  return searchJioSaavn('trending bollywood 2025', limit);
+  const host = await getAudiusHost();
+  const data = await fetchJSON(`${host}/v1/tracks/trending?app_name=${AUDIUS_APP_NAME}&limit=${limit}`, 8000);
+  const tracks: AudiusTrack[] = data?.data || [];
+  return tracks.map((t) => parseAudiusTrack(t, host));
 }
 
 // ─── Language-Specific Search (iTunes artist queries) ────────────────────────
@@ -247,40 +192,18 @@ export async function getByLanguage(language: string, limit = 18): Promise<Track
   const queries = LANGUAGE_QUERIES[language] || [`${language.toLowerCase()} music`, `${language.toLowerCase()} songs`];
   const perQuery = Math.ceil(limit / queries.length) + 2;
 
-  // Fire all queries in parallel via Promise.allSettled
   const results = await Promise.allSettled(
-    queries.map((q) => searchITunes(q, perQuery))
+    queries.map((q) => searchJioSaavn(q, perQuery))
   );
 
-  // Also try JioSaavn (bonus; may return empty)
-  const saavnResult = await Promise.allSettled(
-    queries.slice(0, 2).map((q) => searchJioSaavn(q, perQuery))
-  );
-
-  // Combine and deduplicate by title+artist
   const seen = new Set<string>();
   const tracks: Track[] = [];
 
-  // JioSaavn first (full songs)
-  for (const r of saavnResult) {
-    if (r.status === 'fulfilled') {
-      for (const t of r.value) {
-        const key = `${t.title.toLowerCase().trim()}-${t.artist.toLowerCase().trim()}`;
-        if (!seen.has(key) && t.streamUrl) {
-          seen.add(key);
-          t.language = language;
-          tracks.push(t);
-        }
-      }
-    }
-  }
-
-  // iTunes
   for (const r of results) {
     if (r.status === 'fulfilled') {
       for (const t of r.value) {
         const key = `${t.title.toLowerCase().trim()}-${t.artist.toLowerCase().trim()}`;
-        if (!seen.has(key) && t.previewUrl) {
+        if (!seen.has(key) && t.streamUrl) {
           seen.add(key);
           t.language = language;
           tracks.push(t);
@@ -298,21 +221,15 @@ export const getJioSaavnByLanguage = getByLanguage;
 // ─── Unified Search ──────────────────────────────────────────────────────────
 
 export async function searchAll(query: string): Promise<{
-  saavn: Track[];
+  audius: Track[];
   itunes: Track[];
   deezer: Track[];
 }> {
-  const [saavn, itunes] = await Promise.allSettled([
-    searchJioSaavn(query, 25),
-    searchITunes(query, 15),
-  ]);
-
-  const saavnResults = saavn.status === 'fulfilled' ? saavn.value : [];
-  const itunesResults = itunes.status === 'fulfilled' ? itunes.value : [];
+  const audius = await searchJioSaavn(query, 30);
 
   return {
-    saavn: saavnResults,
-    itunes: itunesResults,
+    audius,
+    itunes: [],
     deezer: [],
   };
 }
@@ -337,8 +254,8 @@ export async function getTrendingByLanguage(language: string): Promise<Track[]> 
 
 export async function getGlobalTopCharts(): Promise<Track[]> {
   const [a, b] = await Promise.allSettled([
-    searchITunes('top hits global 2025', 15),
-    searchITunes('worldwide trending 2025', 10),
+    searchJioSaavn('top hits global 2025', 15),
+    searchJioSaavn('worldwide trending 2025', 10),
   ]);
   const s1 = a.status === 'fulfilled' ? a.value : [];
   const s2 = b.status === 'fulfilled' ? b.value : [];
@@ -358,7 +275,7 @@ export const MOOD_QUERIES: Record<string, string> = {
 
 export async function getByMood(mood: string): Promise<Track[]> {
   const query = MOOD_QUERIES[mood] || `${mood} music`;
-  return searchITunes(query, 20);
+  return searchJioSaavn(query, 20);
 }
 
 // ─── Classic Songs (80s-2000s) ──────────────────────────────────────────────
@@ -383,7 +300,7 @@ export async function getClassicByDecade(decade: '80s' | '90s' | '2000s', limit 
   const perQuery = Math.ceil(limit / queries.length) + 1;
 
   const results = await Promise.allSettled(
-    queries.map((q) => searchITunes(q, perQuery))
+    queries.map((q) => searchJioSaavn(q, perQuery))
   );
 
   const seen = new Set<string>();
