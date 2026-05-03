@@ -20,12 +20,12 @@ COPY services/${SERVICE_NAME}/ services/${SERVICE_NAME}/
 RUN pnpm install --frozen-lockfile --filter "@auralux/shared-types" --filter "@auralux/common" --filter "@auralux/logger" --filter "@auralux/kafka-client" --filter "@auralux/redis-client" --filter "@auralux/${SERVICE_NAME}"
 
 # Build packages and service
-RUN pnpm run build --filter "@auralux/shared-types" && \
-    pnpm run build --filter "@auralux/common" && \
-    pnpm run build --filter "@auralux/logger" && \
-    pnpm run build --filter "@auralux/kafka-client" && \
-    pnpm run build --filter "@auralux/redis-client" && \
-    pnpm run build --filter "@auralux/${SERVICE_NAME}"
+RUN pnpm --filter "@auralux/shared-types" build && \
+    pnpm --filter "@auralux/common" build && \
+    pnpm --filter "@auralux/logger" build && \
+    pnpm --filter "@auralux/kafka-client" build && \
+    pnpm --filter "@auralux/redis-client" build && \
+    pnpm --filter "@auralux/${SERVICE_NAME}" build
 
 # ── Stage 2: Production ─────────────────────────────────────────────
 FROM node:20-alpine AS production

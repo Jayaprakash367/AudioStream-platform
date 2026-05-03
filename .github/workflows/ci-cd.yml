@@ -35,15 +35,15 @@ jobs:
 
       - name: Build shared packages
         run: |
-          pnpm run build --filter @auralux/shared-types
-          pnpm run build --filter @auralux/common
-          pnpm run build --filter @auralux/logger
-          pnpm run build --filter @auralux/kafka-client
-          pnpm run build --filter @auralux/redis-client
+          pnpm --filter @auralux/shared-types build
+          pnpm --filter @auralux/common build
+          pnpm --filter @auralux/logger build
+          pnpm --filter @auralux/kafka-client build
+          pnpm --filter @auralux/redis-client build
 
       - name: Typecheck all services
         run: |
-          pnpm run build --filter "./services/**"
+          pnpm --filter "./services/**" build
 
   # ── Unit Tests ─────────────────────────────────────────────────────
   test:
@@ -74,11 +74,11 @@ jobs:
 
       - name: Build packages
         run: |
-          pnpm run build --filter @auralux/shared-types
-          pnpm run build --filter @auralux/common
-          pnpm run build --filter @auralux/logger
-          pnpm run build --filter @auralux/kafka-client
-          pnpm run build --filter @auralux/redis-client
+          pnpm --filter @auralux/shared-types build
+          pnpm --filter @auralux/common build
+          pnpm --filter @auralux/logger build
+          pnpm --filter @auralux/kafka-client build
+          pnpm --filter @auralux/redis-client build
 
       - name: Run tests
         env:
