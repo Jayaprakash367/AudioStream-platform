@@ -36,6 +36,7 @@ jobs:
       - name: Build shared packages
         run: |
           pnpm --filter @auralux/shared-types build
+          pnpm --filter @auralux/shared build
           pnpm --filter @auralux/common build
           pnpm --filter @auralux/logger build
           pnpm --filter @auralux/kafka-client build
@@ -75,6 +76,7 @@ jobs:
       - name: Build packages
         run: |
           pnpm --filter @auralux/shared-types build
+          pnpm --filter @auralux/shared build
           pnpm --filter @auralux/common build
           pnpm --filter @auralux/logger build
           pnpm --filter @auralux/kafka-client build

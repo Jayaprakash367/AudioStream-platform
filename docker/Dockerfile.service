@@ -17,10 +17,11 @@ ARG SERVICE_NAME
 COPY services/${SERVICE_NAME}/ services/${SERVICE_NAME}/
 
 # Install dependencies using pnpm
-RUN pnpm install --frozen-lockfile --filter "@auralux/shared-types" --filter "@auralux/common" --filter "@auralux/logger" --filter "@auralux/kafka-client" --filter "@auralux/redis-client" --filter "@auralux/${SERVICE_NAME}"
+RUN pnpm install --frozen-lockfile --filter "@auralux/shared-types" --filter "@auralux/shared" --filter "@auralux/common" --filter "@auralux/logger" --filter "@auralux/kafka-client" --filter "@auralux/redis-client" --filter "@auralux/${SERVICE_NAME}"
 
 # Build packages and service
 RUN pnpm --filter "@auralux/shared-types" build && \
+    pnpm --filter "@auralux/shared" build && \
     pnpm --filter "@auralux/common" build && \
     pnpm --filter "@auralux/logger" build && \
     pnpm --filter "@auralux/kafka-client" build && \
@@ -37,7 +38,7 @@ RUN apk add --no-cache dumb-init && \
 WORKDIR /app
 
 # Install pnpm
-RUN npm install -g pnpm@8
+RUN npm install -g pnpm@10
 
 # Copy package files for production install
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
