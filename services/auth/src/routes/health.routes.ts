@@ -1,7 +1,7 @@
 import { Router, Request, Response } from 'express';
 import { getRedisStatus } from '../services/redis.service';
 
-const router = Router();
+const router: Router = Router();
 const startTime = Date.now();
 
 router.get('/health', (_req: Request, res: Response) => {

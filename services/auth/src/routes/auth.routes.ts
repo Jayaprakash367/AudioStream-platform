@@ -13,7 +13,7 @@ import {
 } from '../services/spotify-auth.service';
 import { requireAuth } from '../middleware/auth.middleware';
 
-const router = Router();
+const router: Router = Router();
 const logger = createLogger('auth-routes');
 
 /**

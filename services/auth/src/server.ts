@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { Application } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import cookieParser from 'cookie-parser';
@@ -13,7 +13,7 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 
 const logger = createLogger('auth-server');
-const app = express();
+const app: Application = express();
 
 // Security
 app.use(helmet({ contentSecurityPolicy: false }));
