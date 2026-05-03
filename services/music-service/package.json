@@ -14,11 +14,11 @@
     "@fastify/cors": "^9.0.0",
     "@fastify/helmet": "^11.1.0",
     "mongoose": "^8.1.0",
-    "@auralux/common": "workspace:*",
-    "@auralux/shared-types": "workspace:*",
-    "@auralux/logger": "workspace:*",
-    "@auralux/kafka-client": "workspace:*",
-    "@auralux/redis-client": "workspace:*"
+    "@auralux/common": "*",
+    "@auralux/shared-types": "*",
+    "@auralux/logger": "*",
+    "@auralux/kafka-client": "*",
+    "@auralux/redis-client": "*"
   },
   "devDependencies": {
     "typescript": "^5.4.0",
@@ -26,3 +26,4 @@
     "rimraf": "^5.0.0"
   }
 }
+

@@ -22,27 +22,28 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 8
+
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: npm
+          cache: pnpm
 
-      - run: npm ci
+      - run: pnpm install --frozen-lockfile
 
       - name: Build shared packages
         run: |
-          npm run build --workspace=packages/shared-types
-          npm run build --workspace=packages/common
-          npm run build --workspace=packages/logger
-          npm run build --workspace=packages/kafka-client
-          npm run build --workspace=packages/redis-client
+          pnpm run build --filter @auralux/shared-types
+          pnpm run build --filter @auralux/common
+          pnpm run build --filter @auralux/logger
+          pnpm run build --filter @auralux/kafka-client
+          pnpm run build --filter @auralux/redis-client
 
       - name: Typecheck all services
         run: |
-          for svc in services/*/; do
-            echo "Typechecking $svc..."
-            npm run build --workspace="$svc" || exit 1
-          done
+          pnpm run build --filter "./services/**"
 
   # ── Unit Tests ─────────────────────────────────────────────────────
   test:
@@ -60,27 +61,31 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 8
+
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: npm
+          cache: pnpm
 
-      - run: npm ci
+      - run: pnpm install --frozen-lockfile
 
       - name: Build packages
         run: |
-          npm run build --workspace=packages/shared-types
-          npm run build --workspace=packages/common
-          npm run build --workspace=packages/logger
-          npm run build --workspace=packages/kafka-client
-          npm run build --workspace=packages/redis-client
+          pnpm run build --filter @auralux/shared-types
+          pnpm run build --filter @auralux/common
+          pnpm run build --filter @auralux/logger
+          pnpm run build --filter @auralux/kafka-client
+          pnpm run build --filter @auralux/redis-client
 
       - name: Run tests
         env:
           MONGO_URI: mongodb://localhost:27017/test
           REDIS_HOST: localhost
           REDIS_PORT: 6379
-        run: npm test --workspaces --if-present
+        run: pnpm test --recursive --if-present
 
   # ── Build & Push Docker Images ─────────────────────────────────────
   build:

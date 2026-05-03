@@ -3,8 +3,11 @@ FROM node:20-alpine AS builder
 
 WORKDIR /app
 
+# Install pnpm
+RUN npm install -g pnpm@8
+
 # Copy root workspace files
-COPY package.json package-lock.json* tsconfig.base.json ./
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml tsconfig.base.json ./
 
 # Copy shared packages
 COPY packages/ packages/
@@ -13,16 +16,16 @@ COPY packages/ packages/
 ARG SERVICE_NAME
 COPY services/${SERVICE_NAME}/ services/${SERVICE_NAME}/
 
-# Install all workspace dependencies (production + dev for build)
-RUN npm ci --workspace=packages/* --workspace=services/${SERVICE_NAME} --include-workspace-root
+# Install dependencies using pnpm
+RUN pnpm install --frozen-lockfile --filter "@auralux/shared-types" --filter "@auralux/common" --filter "@auralux/logger" --filter "@auralux/kafka-client" --filter "@auralux/redis-client" --filter "@auralux/${SERVICE_NAME}"
 
-# Build shared packages first, then the service
-RUN npm run build --workspace=packages/shared-types || true && \
-    npm run build --workspace=packages/common || true && \
-    npm run build --workspace=packages/logger || true && \
-    npm run build --workspace=packages/kafka-client || true && \
-    npm run build --workspace=packages/redis-client || true && \
-    npm run build --workspace=services/${SERVICE_NAME}
+# Build packages and service
+RUN pnpm run build --filter "@auralux/shared-types" && \
+    pnpm run build --filter "@auralux/common" && \
+    pnpm run build --filter "@auralux/logger" && \
+    pnpm run build --filter "@auralux/kafka-client" && \
+    pnpm run build --filter "@auralux/redis-client" && \
+    pnpm run build --filter "@auralux/${SERVICE_NAME}"
 
 # ── Stage 2: Production ─────────────────────────────────────────────
 FROM node:20-alpine AS production
@@ -33,16 +36,19 @@ RUN apk add --no-cache dumb-init && \
 
 WORKDIR /app
 
+# Install pnpm
+RUN npm install -g pnpm@8
+
 # Copy package files for production install
-COPY package.json package-lock.json* ./
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY packages/ packages/
 
 ARG SERVICE_NAME
 COPY services/${SERVICE_NAME}/package.json services/${SERVICE_NAME}/
 
 # Install production dependencies only
-RUN npm ci --omit=dev --workspace=packages/* --workspace=services/${SERVICE_NAME} --include-workspace-root && \
-    npm cache clean --force
+RUN pnpm install --prod --frozen-lockfile --filter "@auralux/shared-types" --filter "@auralux/common" --filter "@auralux/logger" --filter "@auralux/kafka-client" --filter "@auralux/redis-client" --filter "@auralux/${SERVICE_NAME}" && \
+    pnpm store prune
 
 # Copy built artifacts
 COPY --from=builder /app/services/${SERVICE_NAME}/dist services/${SERVICE_NAME}/dist
