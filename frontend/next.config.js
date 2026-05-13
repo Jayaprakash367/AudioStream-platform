@@ -19,8 +19,6 @@ const nextConfig = {
   },
   async rewrites() {
     return {
-      // beforeFiles: Next.js API routes in app/api are resolved FIRST (filesystem)
-      // afterFiles: only proxy non-music gateway calls
       afterFiles: [
         {
           source: '/gateway/:path*',
