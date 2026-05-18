@@ -15,7 +15,6 @@
  *   node dev-launcher.js --services-only   (skip frontend)
  *   node dev-launcher.js --frontend-only   (skip microservices)
  */
-
 'use strict';
 
 const { spawn } = require('child_process');
