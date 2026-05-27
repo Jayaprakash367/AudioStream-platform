@@ -64,7 +64,6 @@ const SERVICES = [
 ];
 
 // ─── Process Registry ─────────────────────────────────────────────────────────
-
 const processes = [];
 
 function killAll() {
