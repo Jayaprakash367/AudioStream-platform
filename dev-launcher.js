@@ -46,7 +46,6 @@ function log(tag, msg, color = C.reset) {
   const ts = new Date().toTimeString().slice(0, 8);
   console.log(`${C.bold}[${ts}]${C.reset} ${color}[${tag}]${C.reset} ${msg}`);
 }
-
 // ─── Service Definitions ─────────────────────────────────────────────────────
 
 const SERVICES = [
