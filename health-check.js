@@ -14,7 +14,6 @@ const endpoints = [
   { name: 'Music Service', url: 'http://localhost:3003/health', method: 'GET' },
   { name: 'Streaming Service', url: 'http://localhost:3004/health', method: 'GET' },
 ];
-
 const colors = {
   reset: '\x1b[0m',
   green: '\x1b[32m',
